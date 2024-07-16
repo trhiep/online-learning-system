@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace OnlineLearningSystem.Models
 {
-    public partial class DBContext : DbContext
+    public partial class OLS_DBContext : DbContext
     {
-        public DBContext()
+        public OLS_DBContext()
         {
         }
 
-        public DBContext(DbContextOptions<DBContext> options)
+        public OLS_DBContext(DbContextOptions<OLS_DBContext> options)
             : base(options)
         {
         }
@@ -23,24 +23,24 @@ namespace OnlineLearningSystem.Models
         public virtual DbSet<ClassSubjectPost> ClassSubjectPosts { get; set; } = null!;
         public virtual DbSet<ClassSubjectTest> ClassSubjectTests { get; set; } = null!;
         public virtual DbSet<ClassSubjectTestAttachment> ClassSubjectTestAttachments { get; set; } = null!;
-        public virtual DbSet<ClassSubjectTestType> ClassSubjectTestTypes { get; set; } = null!;
         public virtual DbSet<Classroom> Classrooms { get; set; } = null!;
+        public virtual DbSet<ConversationMember> ConversationMembers { get; set; } = null!;
+        public virtual DbSet<CoversationMessage> CoversationMessages { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
         public virtual DbSet<NotificationOfAccount> NotificationOfAccounts { get; set; } = null!;
         public virtual DbSet<PostAttachment> PostAttachments { get; set; } = null!;
         public virtual DbSet<PostComment> PostComments { get; set; } = null!;
         public virtual DbSet<StudentTestAnswer> StudentTestAnswers { get; set; } = null!;
         public virtual DbSet<Subject> Subjects { get; set; } = null!;
+        public virtual DbSet<SubjectConversation> SubjectConversations { get; set; } = null!;
         public virtual DbSet<TestQuestion> TestQuestions { get; set; } = null!;
-        public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
-        public virtual DbSet<UserStatus> UserStatuses { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var conf = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-                optionsBuilder.UseSqlServer(conf.GetConnectionString("DBContext"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=34.124.147.48;Initial Catalog=OLS_DB;User ID=admin;Password=12345678");
             }
         }
 
@@ -62,25 +62,13 @@ namespace OnlineLearningSystem.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RoleId).HasColumnName("RoleID");
-
-                entity.Property(e => e.StatusId).HasColumnName("StatusID");
+                entity.Property(e => e.Role)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Username)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.Accounts)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Account_UserRole");
-
-                entity.HasOne(d => d.Status)
-                    .WithMany(p => p.Accounts)
-                    .HasForeignKey(d => d.StatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Account_UserStatus");
             });
 
             modelBuilder.Entity<Answer>(entity =>
@@ -130,7 +118,7 @@ namespace OnlineLearningSystem.Models
             {
                 entity.ToTable("ClassSubject");
 
-                entity.Property(e => e.ClassSubjectId).HasColumnName("CLassSubjectID");
+                entity.Property(e => e.ClassSubjectId).HasColumnName("ClassSubjectID");
 
                 entity.Property(e => e.ClassId).HasColumnName("ClassID");
 
@@ -164,7 +152,7 @@ namespace OnlineLearningSystem.Models
 
                 entity.Property(e => e.PostId).HasColumnName("PostID");
 
-                entity.Property(e => e.ClassSubjectId).HasColumnName("CLassSubjectID");
+                entity.Property(e => e.ClassSubjectId).HasColumnName("ClassSubjectID");
 
                 entity.Property(e => e.PostedDate).HasColumnType("datetime");
 
@@ -194,19 +182,11 @@ namespace OnlineLearningSystem.Models
 
                 entity.Property(e => e.TestName).HasMaxLength(100);
 
-                entity.Property(e => e.TypeId).HasColumnName("TypeID");
-
                 entity.HasOne(d => d.ClassSubject)
                     .WithMany(p => p.ClassSubjectTests)
                     .HasForeignKey(d => d.ClassSubjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ClassTest_ClassSubject");
-
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.ClassSubjectTests)
-                    .HasForeignKey(d => d.TypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ClassSubjectTest_ClassSubjectTestType");
             });
 
             modelBuilder.Entity<ClassSubjectTestAttachment>(entity =>
@@ -223,20 +203,6 @@ namespace OnlineLearningSystem.Models
                     .HasForeignKey(d => d.TestId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ClassSubjectTestAttachments_ClassSubjectTest");
-            });
-
-            modelBuilder.Entity<ClassSubjectTestType>(entity =>
-            {
-                entity.HasKey(e => e.TypeId)
-                    .HasName("ClassSubjectTestType_pk");
-
-                entity.ToTable("ClassSubjectTestType");
-
-                entity.Property(e => e.TypeId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("TypeID");
-
-                entity.Property(e => e.TypeName).HasMaxLength(100);
             });
 
             modelBuilder.Entity<Classroom>(entity =>
@@ -263,6 +229,57 @@ namespace OnlineLearningSystem.Models
                     .HasForeignKey(d => d.FormTeacherId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Classroom_Account_FormTeacher");
+            });
+
+            modelBuilder.Entity<ConversationMember>(entity =>
+            {
+                entity.ToTable("ConversationMember");
+
+                entity.Property(e => e.ConversationMemberId).HasColumnName("ConversationMemberID");
+
+                entity.Property(e => e.AccountId).HasColumnName("AccountID");
+
+                entity.Property(e => e.ConversationId).HasColumnName("ConversationID");
+
+                entity.HasOne(d => d.Account)
+                    .WithMany(p => p.ConversationMembers)
+                    .HasForeignKey(d => d.AccountId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("ConversationMember_Account");
+
+                entity.HasOne(d => d.Conversation)
+                    .WithMany(p => p.ConversationMembers)
+                    .HasForeignKey(d => d.ConversationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("ConversationMember_SubjectConversation");
+            });
+
+            modelBuilder.Entity<CoversationMessage>(entity =>
+            {
+                entity.HasKey(e => e.MessageId)
+                    .HasName("CoversationMessage_pk");
+
+                entity.ToTable("CoversationMessage");
+
+                entity.Property(e => e.MessageId).HasColumnName("MessageID");
+
+                entity.Property(e => e.ConversationId).HasColumnName("ConversationID");
+
+                entity.Property(e => e.SendById).HasColumnName("SendByID");
+
+                entity.Property(e => e.SendTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Conversation)
+                    .WithMany(p => p.CoversationMessages)
+                    .HasForeignKey(d => d.ConversationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("CoversationMessage_SubjectConversation");
+
+                entity.HasOne(d => d.SendBy)
+                    .WithMany(p => p.CoversationMessages)
+                    .HasForeignKey(d => d.SendById)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("CoversationMessage_Account");
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -306,18 +323,17 @@ namespace OnlineLearningSystem.Models
 
             modelBuilder.Entity<PostAttachment>(entity =>
             {
-                entity.HasKey(e => e.PostId)
-                    .HasName("PostAttachment_pk");
-
                 entity.ToTable("PostAttachment");
 
-                entity.Property(e => e.PostId)
+                entity.Property(e => e.PostAttachmentId)
                     .ValueGeneratedNever()
-                    .HasColumnName("PostID");
+                    .HasColumnName("PostAttachmentID");
+
+                entity.Property(e => e.PostId).HasColumnName("PostID");
 
                 entity.HasOne(d => d.Post)
-                    .WithOne(p => p.PostAttachment)
-                    .HasForeignKey<PostAttachment>(d => d.PostId)
+                    .WithMany(p => p.PostAttachments)
+                    .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("PostAttachment_ClassPost");
             });
@@ -396,6 +412,26 @@ namespace OnlineLearningSystem.Models
                 entity.Property(e => e.SubjectName).HasMaxLength(100);
             });
 
+            modelBuilder.Entity<SubjectConversation>(entity =>
+            {
+                entity.HasKey(e => e.ConversationId)
+                    .HasName("SubjectConversation_pk");
+
+                entity.ToTable("SubjectConversation");
+
+                entity.Property(e => e.ConversationId).HasColumnName("ConversationID");
+
+                entity.Property(e => e.ClassSubjectId).HasColumnName("ClassSubjectID");
+
+                entity.Property(e => e.GroupChatName).HasMaxLength(100);
+
+                entity.HasOne(d => d.ClassSubject)
+                    .WithMany(p => p.SubjectConversations)
+                    .HasForeignKey(d => d.ClassSubjectId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("SubjectConversation_ClassSubject");
+            });
+
             modelBuilder.Entity<TestQuestion>(entity =>
             {
                 entity.ToTable("TestQuestion");
@@ -411,30 +447,6 @@ namespace OnlineLearningSystem.Models
                     .HasForeignKey(d => d.TestId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("TestQuestion_ClassTest");
-            });
-
-            modelBuilder.Entity<UserRole>(entity =>
-            {
-                entity.HasKey(e => e.RoleId)
-                    .HasName("UserRole_pk");
-
-                entity.ToTable("UserRole");
-
-                entity.Property(e => e.RoleId).HasColumnName("RoleID");
-
-                entity.Property(e => e.RoleName).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<UserStatus>(entity =>
-            {
-                entity.HasKey(e => e.StatusId)
-                    .HasName("UserStatus_pk");
-
-                entity.ToTable("UserStatus");
-
-                entity.Property(e => e.StatusId).HasColumnName("StatusID");
-
-                entity.Property(e => e.StatusName).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);
