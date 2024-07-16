@@ -9,6 +9,7 @@ namespace OnlineLearningSystem.Models
         {
             ClassSubjectPosts = new HashSet<ClassSubjectPost>();
             ClassSubjectTests = new HashSet<ClassSubjectTest>();
+            SubjectConversations = new HashSet<SubjectConversation>();
         }
 
         public int ClassSubjectId { get; set; }
@@ -21,5 +22,6 @@ namespace OnlineLearningSystem.Models
         public virtual Account SubjectTeacherNavigation { get; set; } = null!;
         public virtual ICollection<ClassSubjectPost> ClassSubjectPosts { get; set; }
         public virtual ICollection<ClassSubjectTest> ClassSubjectTests { get; set; }
+        public virtual ICollection<SubjectConversation> SubjectConversations { get; set; }
     }
 }

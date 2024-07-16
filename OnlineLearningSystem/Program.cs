@@ -10,7 +10,7 @@ namespace OnlineLearningSystem
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddDbContext<DBContext>();
+            builder.Services.AddDbContext<OLS_DBContext>();
             builder.Services.AddSession();
             builder.Services.AddMemoryCache();
             builder.Services.AddHttpContextAccessor();
@@ -26,6 +26,8 @@ namespace OnlineLearningSystem
             }
 
             app.UseStaticFiles();
+
+            app.UseSession();
 
             app.UseRouting();
 
