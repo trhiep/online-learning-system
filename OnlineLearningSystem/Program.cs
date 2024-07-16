@@ -1,4 +1,4 @@
-using OnlineLearningSystem.Models;
+//using OnlineLearningSystem.Models;
 
 namespace OnlineLearningSystem
 {
@@ -10,7 +10,7 @@ namespace OnlineLearningSystem
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddDbContext<DBContext>();
+            //builder.Services.AddDbContext<DBContext>();
             builder.Services.AddSession();
             builder.Services.AddMemoryCache();
             builder.Services.AddHttpContextAccessor();

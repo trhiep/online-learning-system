@@ -7,6 +7,7 @@ namespace OnlineLearningSystem.Models
     {
         public ClassSubjectPost()
         {
+            PostAttachments = new HashSet<PostAttachment>();
             PostComments = new HashSet<PostComment>();
         }
 
@@ -17,7 +18,7 @@ namespace OnlineLearningSystem.Models
         public DateTime PostedDate { get; set; }
 
         public virtual ClassSubject ClassSubject { get; set; } = null!;
-        public virtual PostAttachment? PostAttachment { get; set; }
+        public virtual ICollection<PostAttachment> PostAttachments { get; set; }
         public virtual ICollection<PostComment> PostComments { get; set; }
     }
 }
