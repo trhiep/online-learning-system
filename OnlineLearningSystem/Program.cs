@@ -1,4 +1,5 @@
 using OnlineLearningSystem.Models;
+using OnlineLearningSystem.Utils.EmailUtils;
 
 namespace OnlineLearningSystem
 {
@@ -10,10 +11,11 @@ namespace OnlineLearningSystem
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddDbContext<DBContext>();
+            builder.Services.AddDbContext<OLS_DBContext>();
             builder.Services.AddSession();
             builder.Services.AddMemoryCache();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -27,11 +29,15 @@ namespace OnlineLearningSystem
 
             app.UseStaticFiles();
 
+            app.UseSession();
+
             app.UseRouting();
 
             app.UseAuthorization();
 
             app.MapRazorPages();
+
+            app.MapHub<SignalRHub>("/SignalRHub");
 
             app.Run();
         }

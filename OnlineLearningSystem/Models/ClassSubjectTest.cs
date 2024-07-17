@@ -22,10 +22,8 @@ namespace OnlineLearningSystem.Models
         public float PassScore { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public int TypeId { get; set; }
 
         public virtual ClassSubject ClassSubject { get; set; } = null!;
-        public virtual ClassSubjectTestType Type { get; set; } = null!;
         public virtual ICollection<ClassSubjectTestAttachment> ClassSubjectTestAttachments { get; set; }
         public virtual ICollection<StudentTestAnswer> StudentTestAnswers { get; set; }
         public virtual ICollection<TestQuestion> TestQuestions { get; set; }
