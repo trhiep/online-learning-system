@@ -14,6 +14,8 @@
 
     <!-- Libraries Stylesheet -->
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="~/lib/richtexteditor/rte_theme_default.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/css/customized-bootstrap.min.css" rel="stylesheet" />
@@ -59,7 +61,7 @@
                 <div class="col-lg-4 col-md-6">
                     <h5 class="text-uppercase border-start border-5 border-success ps-3 mb-4">LIÊN HỆ</h5>
                     <p class="mb-2"><i class="bi bi-geo-alt text-success me-2"></i>Hoà Lạc, Thạch Thất, TP. Hà Nội</p>
-                    <p class="mb-2"><i class="bi bi-envelope-open text-success me-2"></i>hieptv.working@gmail.com</p>
+                    <p class="mb-2"><i class="bi bi-envelope-open text-success me-2"></i>hieptv@gmail.com</p>
                     <p class="mb-0"><i class="bi bi-telephone text-success me-2"></i>+84 999999999</p>
                 </div>
                 <div class="col-12 text-center text-body">
@@ -74,7 +76,7 @@
         <div class="container">
             <div class="row g-5">
                 <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-md-0">&copy; <a class="text-white" href="#">SHOP BẢN QUYỀN</a>. All Rights Reserved.</p>
+                    <p class="mb-md-0">&copy; <a class="text-white" href="#">OLS</a>. All Rights Reserved.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <p class="mb-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a></p>
@@ -89,10 +91,15 @@
     <!-- JavaScript Libraries -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
     <script src="~/lib/easing/easing.min.js"></script>
     <script src="~/lib/waypoints/waypoints.min.js"></script>
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/richtexteditor/rte.js"></script>
+    <script src="~/lib/richtexteditor/plugins/all_plugins.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- Template Javascript -->
     @await RenderSectionAsync("Scripts", required: false)

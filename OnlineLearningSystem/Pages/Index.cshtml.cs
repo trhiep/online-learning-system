@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OnlineLearningSystem.Utils.EmailUtils;
 
 namespace OnlineLearningSystem.Pages
 {
@@ -14,7 +15,6 @@ namespace OnlineLearningSystem.Pages
 
         public void OnGet()
         {
-
         }
     }
 }
