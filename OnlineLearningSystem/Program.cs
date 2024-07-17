@@ -1,4 +1,5 @@
 using OnlineLearningSystem.Models;
+using OnlineLearningSystem.Utils.EmailUtils;
 
 namespace OnlineLearningSystem
 {
@@ -14,6 +15,7 @@ namespace OnlineLearningSystem
             builder.Services.AddSession();
             builder.Services.AddMemoryCache();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -34,6 +36,8 @@ namespace OnlineLearningSystem
             app.UseAuthorization();
 
             app.MapRazorPages();
+
+            app.MapHub<SignalRHub>("/SignalRHub");
 
             app.Run();
         }
