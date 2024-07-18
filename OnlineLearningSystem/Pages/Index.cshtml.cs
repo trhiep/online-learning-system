@@ -13,8 +13,30 @@ namespace OnlineLearningSystem.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        private bool IsUserAuthenticated()
         {
+            var account = SE1728_Group2_A2.Utils.SessionHelper.SessionExtensions.GetObjectFromJson<Staff>(HttpContext.Session, "Staff");
+            if (account != null)
+            {
+                if (account.Role == 1)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        public IActionResult OnGet()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserSession")))
+            {
+                return RedirectToPage("Logins/Login");
+            }
+
+            // Người dùng đã đăng nhập, tiếp tục xử lý
+            return Page();
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace OnlineLearningSystem.Models
 {
-    public partial class OLS_DBContext : IdentityDbContext
+    public partial class OLS_DBContext : DbContext
     {
         public OLS_DBContext()
         {

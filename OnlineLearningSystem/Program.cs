@@ -17,6 +17,7 @@ namespace OnlineLearningSystem
             builder.Services.AddMemoryCache();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<OLS_DBContext>();
             var app = builder.Build();
