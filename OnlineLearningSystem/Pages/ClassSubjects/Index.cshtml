@@ -1,0 +1,201 @@
+﻿@page
+@model OnlineLearningSystem.Pages.ClassSubjects.IndexModel
+@{
+}
+
+<div class="row">
+    <div class="col-md-12 content">
+        <div class="container">
+            <div class="row gy-3 mt-3">
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <img class="card-img-top class-banner" style="max-height: 350px" src="~/img/classroom.jpg" />
+                        <div class="card-body">
+                            <h5 class="card-title">TÊN LỚP Ở ĐÂY</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if(Model.LogedInAccount.Role == "Teacher")
+            {
+                <div class="row gy-3">
+                    <div class="col-md-12">
+                        <a href="ClassSubjectTests/Create" class="btn btn-outline-success float-end">TẠO BÀI THI</a>
+                        <a href="#" class="btn btn-outline-primary float-end" style="margin-right: 10px">TẠO BÀI GIẢNG</a>
+                    </div>
+                </div>
+            }
+
+            <div class="row mt-2">
+                @if (Model.InactiveClassSubjectTest != null)
+                {
+                    @foreach (var item in Model.InactiveClassSubjectTest)
+                    {
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>CẢNH BÁO!</strong> Hiện tại bài thi <strong>@item.TestName</strong> chưa có bất kỳ câu hỏi nào. <a href="ClassSubjectTests/AddQuestion?testId=@item.TestId" class="alert-link">Bấm vào đây để thêm câu hỏi</a>.
+                        </div>
+                    }
+                }
+
+            </div>
+
+            <div>
+                <div class="border-start border-5 border-success ps-5 mb-5" style="max-width: 600px;">
+                    <h5 class="text-uppercase mb-0">CÁC BÀI THI HIỆN CÓ</h5>
+                </div>
+
+                <div class="owl-carousel owl-theme">
+                    <div class="item">
+                        <div class="card" style="min-width: 300px;">
+                            <img class="card-img-top" src="~/img/default-exam-image.jpg" alt="Exam image" style="max-height: 200px" />
+                            <div class="card-body">
+                                <a href="#"><h5 class="card-title text-center nav-link default-exam-name">Exam Name Here 1</h5></a>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i class="bi bi-calendar"></i> <span>01-01-2000 12:00</span>
+                                    <i class="bi bi-arrow-right"></i>
+                                    <span>01-01-2000 12:45</span>
+                                </li>
+                                <li class="list-group-item"><i class="bi bi-stopwatch"></i> <span>45 phút</span></li>
+                            </ul>
+                            <div class="card-body text-center">
+                                <a href="#" class="btn btn-outline-primary">XEM CHI TIẾT</a>
+                                <a href="#" class="btn btn-outline-warning">VÀO THI</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="card" style="min-width: 300px;">
+                            <img class="card-img-top" src="~/img/default-exam-image.jpg" alt="Exam image" style="max-height: 200px" />
+                            <div class="card-body">
+                                <a href="#"><h5 class="card-title text-center nav-link default-exam-name">Exam Name Here 2</h5></a>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i class="bi bi-calendar"></i> <span>01-01-2000 12:00</span>
+                                    <i class="bi bi-arrow-right"></i>
+                                    <span>01-01-2000 12:45</span>
+                                </li>
+                                <li class="list-group-item"><i class="bi bi-stopwatch"></i> <span>45 phút</span></li>
+                            </ul>
+                            <div class="card-body text-center">
+                                <a href="#" class="btn btn-outline-primary">XEM CHI TIẾT</a>
+                                <a href="#" class="btn btn-outline-warning">VÀO THI</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="card" style="min-width: 300px;">
+                            <img class="card-img-top" src="~/img/default-exam-image.jpg" alt="Exam image" style="max-height: 200px" />
+                            <div class="card-body">
+                                <a href="#"><h5 class="card-title text-center nav-link default-exam-name">Exam Name Here 3</h5></a>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i class="bi bi-calendar"></i> <span>01-01-2000 12:00</span>
+                                    <i class="bi bi-arrow-right"></i>
+                                    <span>01-01-2000 12:45</span>
+                                </li>
+                                <li class="list-group-item"><i class="bi bi-stopwatch"></i> <span>45 phút</span></li>
+                            </ul>
+                            <div class="card-body text-center">
+                                <a href="#" class="btn btn-outline-primary">XEM CHI TIẾT</a>
+                                <a href="#" class="btn btn-outline-warning">VÀO THI</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="card" style="min-width: 300px;">
+                            <img class="card-img-top" src="~/img/default-exam-image.jpg" alt="Exam image" style="max-height: 200px" />
+                            <div class="card-body">
+                                <a href="#"><h5 class="card-title text-center nav-link default-exam-name">Exam Name Here 4</h5></a>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i class="bi bi-calendar"></i> <span>01-01-2000 12:00</span>
+                                    <i class="bi bi-arrow-right"></i>
+                                    <span>01-01-2000 12:45</span>
+                                </li>
+                                <li class="list-group-item"><i class="bi bi-stopwatch"></i> <span>45 phút</span></li>
+                            </ul>
+                            <div class="card-body text-center">
+                                <a href="#" class="btn btn-outline-primary">XEM CHI TIẾT</a>
+                                <a href="#" class="btn btn-outline-warning">VÀO THI</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div>
+                <div class="border-start border-5 border-success ps-5 mb-5" style="max-width: 600px;">
+                    <h5 class="text-uppercase mb-0">CÁC BÀI GIẢNG CỦA BẠN</h5>
+                </div>
+
+                <div>
+                    <div class="card mb-3">
+                        <div class="card-header"> 
+                            GIÁO VIÊN X ĐÃ ĐĂNG MỘT BÀI GIẢNG MỚI VÀO 01-01-2000 12:30
+                        </div>
+                        <a href="#">
+                            <div class="card-body">
+                                <h5 class="card-title">Tiêu đề bài giảng 1</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            GIÁO VIÊN X ĐÃ ĐĂNG MỘT BÀI GIẢNG MỚI VÀO 01-01-2000 12:30
+                        </div>
+                        <a href="#">
+                            <div class="card-body">
+                                <h5 class="card-title">Tiêu đề bài giảng 2</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            GIÁO VIÊN X ĐÃ ĐĂNG MỘT BÀI GIẢNG MỚI VÀO 01-01-2000 12:30
+                        </div>
+                        <a href="#">
+                            <div class="card-body">
+                                <h5 class="card-title">Tiêu đề bài giảng 3</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            GIÁO VIÊN X ĐÃ ĐĂNG MỘT BÀI GIẢNG MỚI VÀO 01-01-2000 12:30
+                        </div>
+                        <a href="#">
+                            <div class="card-body">
+                                <h5 class="card-title">Tiêu đề bài giảng 4</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            GIÁO VIÊN X ĐÃ ĐĂNG MỘT BÀI GIẢNG MỚI VÀO 01-01-2000 12:30
+                        </div>
+                        <a href="#">
+                            <div class="card-body">
+                                <h5 class="card-title">Tiêu đề bài giảng 5</h5>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            
+
+
+            <input type="hidden" id="toastMessage" value="">
+        </div>
+    </div>
+</div>

@@ -456,3 +456,35 @@
 .blog-item a:hover i::after {
     width: 50px;
 }
+
+.carousel-item {
+    min-width: 300px;
+}
+
+.owl-nav button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: #198754;
+}
+
+    .owl-nav button.owl-prev {
+        left: -30px;
+    }
+
+    .owl-nav button.owl-next {
+        right: -30px;
+    }
+
+
+.text-bold {
+    font-weight: bold;
+}
+
+.span-warning-italic {
+    color: red;
+    font-style: italic;
+}
