@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace OnlineLearningSystem.Models
 {
-    public partial class OLS_DBContext : DbContext
+    public partial class OLS_DBContext : IdentityDbContext
     {
         public OLS_DBContext()
         {

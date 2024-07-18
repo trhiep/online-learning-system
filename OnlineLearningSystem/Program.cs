@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using OnlineLearningSystem.Models;
 using OnlineLearningSystem.Utils.EmailUtils;
 
@@ -17,6 +18,7 @@ namespace OnlineLearningSystem
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR();
 
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<OLS_DBContext>();
             var app = builder.Build();
 
             app.UseSession();
@@ -33,6 +35,7 @@ namespace OnlineLearningSystem
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();
