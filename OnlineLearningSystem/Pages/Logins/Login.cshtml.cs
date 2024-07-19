@@ -44,11 +44,11 @@ namespace OnlineLearningSystem.Pages.Logins
                 switch (loginAccount.Role)
                 {
                     case "Admin":
-                        return RedirectToPage("/UserManager");
+                        return RedirectToPage("/DashBoard/UserManage");
                     case "Teacher":
-                        return RedirectToPage("/AdminProfile");
+                        return RedirectToPage("/UserProfile/TeacherProfile");
                     case "Student":
-                        return RedirectToAction("Index", "Student");
+                        return RedirectToPage("/UserProfile/StudentProfile");
                     default:
                         return RedirectToAction("Login");
                 }

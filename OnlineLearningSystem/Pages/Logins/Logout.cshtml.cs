@@ -9,14 +9,12 @@ namespace OnlineLearningSystem.Pages.Logins
 
         public IActionResult OnGet()
         {
-            if(HttpContext.Session.GetString("UserSession") != null)
-            {
+           
                 HttpContext.Session.Remove("UserSession");
                 HttpContext.Session.Clear();
-                // Điều hướng về trang chính hoặc trang đăng nhập
-                return Page();
-            }
-            return Page();
+            // Điều hướng về trang chính hoặc trang đăng nhập
+            return RedirectToPage("/Logins/Login");
+
             // Xóa session
 
 

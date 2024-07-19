@@ -8,7 +8,7 @@ namespace OnlineLearningSystem.Pages.UserProfile
         
             public IActionResult OnGet()
             {
-                if (string.IsNullOrEmpty(HttpContext.Session.GetString("RoleSession")) && HttpContext.Session.GetString("RoleSession") == "Student")
+                if (!string.IsNullOrEmpty(HttpContext.Session.GetString("RoleSession")) && HttpContext.Session.GetString("RoleSession") == "Student")
                 {
                     TempData["ErrorRole"] = "Login with admin to access";
                     return RedirectToPage("/Error");
