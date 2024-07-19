@@ -1,3 +1,4 @@
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -20,8 +21,15 @@ namespace OnlineLearningSystem.Pages.Logins
 
         public string ErrorMessage { get; set; }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("UserSession")))
+            {
+                return RedirectToPage("/Index");
+            }
+
+            // Người dùng đã đăng nhập, tiếp tục xử lý
+            return Page();
         }
 
 		public IActionResult OnPostAsync()
@@ -41,5 +49,8 @@ namespace OnlineLearningSystem.Pages.Logins
 			}
 
 		}
-	}
+
+       
+
+    }
 }
