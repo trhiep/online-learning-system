@@ -39,8 +39,20 @@ namespace OnlineLearningSystem.Pages.Logins
 			if (loginAccount != null) {
 
 				HttpContext.Session.SetString("UserSession", loginAccount.Username);
-				return RedirectToPage("/Index");
-			}
+                HttpContext.Session.SetString("RoleSession", loginAccount.Role);
+
+                switch (loginAccount.Role)
+                {
+                    case "Admin":
+                        return RedirectToPage("/UserManager");
+                    case "Teacher":
+                        return RedirectToPage("/AdminProfile");
+                    case "Student":
+                        return RedirectToAction("Index", "Student");
+                    default:
+                        return RedirectToAction("Login");
+                }
+            }
 			else
 			{
 				ErrorMessage = "Username Or Email Doesn't Match. Try Again!!";

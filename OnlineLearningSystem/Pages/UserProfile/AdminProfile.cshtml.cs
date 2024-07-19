@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace OnlineLearningSystem.Pages.Dashboard
+namespace OnlineLearningSystem.Pages.UserProfile
 {
-    public class UserManageModel : PageModel
+    public class UserProfileModel : PageModel
     {
         public IActionResult OnGet()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("RoleSession")) && HttpContext.Session.GetString("RoleSession") !="Admin")
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("RoleSession")) && (HttpContext.Session.GetString("RoleSession") != "Admin"))
             {
                 TempData["ErrorRole"] = "Login with admin to access";
                 return RedirectToPage("/Error");
