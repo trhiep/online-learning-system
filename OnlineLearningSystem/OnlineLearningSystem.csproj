@@ -18,16 +18,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-<<<<<<< HEAD
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration" Version="6.0.17" />
-=======
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.17" />
->>>>>>> ec4be0be65107231d33ab2180f7bc40b2812f018
     <PackageReference Include="NPOI" Version="2.7.1" />
     <PackageReference Include="System.Net.Mail.Abstractions" Version="1.1.21" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Test\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
