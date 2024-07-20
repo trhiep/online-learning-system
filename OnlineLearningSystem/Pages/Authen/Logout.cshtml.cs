@@ -13,7 +13,7 @@ namespace OnlineLearningSystem.Pages.Logins
                 HttpContext.Session.Remove("UserSession");
                 HttpContext.Session.Clear();
             // Điều hướng về trang chính hoặc trang đăng nhập
-            return RedirectToPage("/Logins/Login");
+            return RedirectToPage("/Authen/Login");
 
             // Xóa session
 

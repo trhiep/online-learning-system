@@ -62,9 +62,9 @@
                             @if (@HttpContextAccessor.HttpContext.Session.GetString("RoleSession") == ("Admin"))
                             {
                                 <li><a class="dropdown-item" href="/dashboard">Profile Admin</a></li>
-                                <li><a class="dropdown-item" href="/teacher-profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/admin-profile">Profile</a></li>
 
-                                <li><a class="dropdown-item" asp-page="/Logins/Logout">Logout</a></li>
+                                <li><a class="dropdown-item" asp-page="/Authen/Logout">Logout</a></li>
                             }
                            
                                

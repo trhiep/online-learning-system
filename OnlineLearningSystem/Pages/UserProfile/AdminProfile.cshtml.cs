@@ -7,6 +7,7 @@ namespace OnlineLearningSystem.Pages.UserProfile
     {
         public IActionResult OnGet()
         {
+            //
             if (!string.IsNullOrEmpty(HttpContext.Session.GetString("RoleSession")) && (HttpContext.Session.GetString("RoleSession") != "Admin"))
             {
                 TempData["ErrorRole"] = "Login with admin to access";
