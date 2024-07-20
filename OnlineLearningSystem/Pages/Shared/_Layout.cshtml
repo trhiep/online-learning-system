@@ -21,6 +21,7 @@
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="~/lib/richtexteditor/rte_theme_default.css" rel="stylesheet" />
+    <link href="~/lib/owlcarousel/assets/owl.theme.default.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/css/customized-bootstrap.min.css" rel="stylesheet" />
@@ -75,7 +76,7 @@
     </nav>
     <!-- Navbar End -->
     <!-- Body Start -->
-    <div class="container">
+    <div class="container" style="min-height: 750px">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -85,19 +86,6 @@
     <div class="container-fluid bg-light mt-5 py-5">
         <div class="container pt-5">
             <div class="row g-5">
-                <div class="col-lg-4 col-md-6">
-                    
-                </div>
-                <div class="col-lg-2 col-md-6">
-                </div>
-                <div class="col-lg-2 col-md-6">
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="text-uppercase border-start border-5 border-success ps-3 mb-4">LIÊN HỆ</h5>
-                    <p class="mb-2"><i class="bi bi-geo-alt text-success me-2"></i>Hoà Lạc, Thạch Thất, TP. Hà Nội</p>
-                    <p class="mb-2"><i class="bi bi-envelope-open text-success me-2"></i>hieptv@gmail.com</p>
-                    <p class="mb-0"><i class="bi bi-telephone text-success me-2"></i>+84 999999999</p>
-                </div>
                 <div class="col-12 text-center text-body">
                     <a class="text-body" href="">ĐIỀU KHOẢN SỬ DỤNG</a>
                     <span class="mx-1">|</span>
@@ -105,7 +93,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>   
     <div class="container-fluid bg-dark text-white-50 py-4">
         <div class="container">
             <div class="row g-5">
@@ -121,11 +109,26 @@
     <!-- Footer End -->
     <!-- Back to Top -->
     <a href="/" class="btn btn-success py-3 fs-4 back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <!-- Toast Container -->
+    <input type="hidden" id="toastMessage" value="@ViewBag.ToastMessage">
+    <div class="toast-container position-absolute end-0 p-3" style="z-index: 11; bottom: 78%">
+        <!-- Toast -->
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="myToast">
+            <div class="toast-header" style="background-color: #198754">
+                <strong class="mr-auto" style="color: white">THÔNG BÁO</strong>
+            </div>
+            <div class="toast-body">
+                <span id="toastMessageContent" style="font-size: 16px"></span>
+            </div>
+        </div>
+    </div>
+    <!-- End of Toast -->
+    <!-- End of Toast Container -->
 
     <!-- JavaScript Libraries -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
     <script src="~/lib/easing/easing.min.js"></script>
     <script src="~/lib/waypoints/waypoints.min.js"></script>
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
@@ -134,6 +137,60 @@
     <script src="~/lib/richtexteditor/plugins/all_plugins.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- Disable context menu -->
+    @* <script>
+        function disableContextMenu(event) {
+            event.preventDefault();
+        }
+
+        document.addEventListener('contextmenu', disableContextMenu);
+    </script> *@
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let toastMessageInput = document.getElementById("toastMessage");
+            let toastMessageContent = document.getElementById("toastMessageContent");
+
+            // Kiểm tra xem input hidden có nội dung không
+            if (toastMessageInput && toastMessageInput.value) {
+                // Hiển thị nội dung của toast
+                toastMessageContent.innerText = toastMessageInput.value;
+
+                // Hiển thị toast
+                var myToast = new bootstrap.Toast(document.getElementById('myToast'));
+                myToast.show();
+            }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var itemCount = $(".owl-carousel .item").length;
+
+            $(".owl-carousel").owlCarousel({
+                items: 3, // Số lượng mục trong một hàng
+                loop: itemCount > 3, // Chỉ lặp lại nếu có nhiều hơn 3 mục
+                margin: 10, // Khoảng cách giữa các mục
+                nav: itemCount > 3, // Chỉ hiển thị nút điều hướng nếu có nhiều hơn 3 mục
+                navText: ['<i class="bi bi-chevron-left"></i>', '<i class="bi bi-chevron-right"></i>'], // Biểu tượng Bootstrap Icons cho prev và next
+                dots: itemCount > 3, // Chỉ hiển thị dấu chấm điều hướng nếu có nhiều hơn 3 mục
+                mouseDrag: itemCount > 3, // Chỉ cho phép kéo bằng chuột nếu có nhiều hơn 3 mục
+                touchDrag: itemCount > 3, // Chỉ cho phép kéo bằng cảm ứng nếu có nhiều hơn 3 mục
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 2
+                    },
+                    1000: {
+                        items: 3
+                    }
+                }
+            });
+        });
+    </script>
 
     <!-- Template Javascript -->
     @await RenderSectionAsync("Scripts", required: false)
