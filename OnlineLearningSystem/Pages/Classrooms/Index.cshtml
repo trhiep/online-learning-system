@@ -1,0 +1,54 @@
+﻿@page
+@model OnlineLearningSystem.Pages.Classrooms.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Classroom[0].ClassName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Classroom[0].IsActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Classroom[0].CreateByNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Classroom[0].FormTeacher)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Classroom) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateByNavigation.AccountId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FormTeacher.AccountId)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ClassId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ClassId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ClassId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

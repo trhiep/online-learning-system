@@ -1,0 +1,78 @@
+﻿@page
+@model OnlineLearningSystem.Pages.ClassSubjectTests.CreateModel
+@{
+}
+
+<div class="row g-5 p-5" style="background-color: #d9d9d9">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <div class="border-start border-5 border-success ps-5 mb-5" style="max-width: 600px;">
+            <h3 class="text-uppercase mb-0">TẠO BÀI THI</h3>
+        </div>
+        <form method="POST">
+            <div class="row g-3">
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.TestName" class="text-bold">Tên bài thi</label>
+                    <input asp-for="ClassSubjectTest.TestName"
+                           class="form-control bg-light border-0 px-4" placeholder="Nhập tên bài thi" required>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="TestStartDate" class="text-bold">Thời gian bắt đầu</label>
+                    <input asp-for="TestStartDate" id="inp_exam-start-date" type="text" placeholder="dd/mm/yyyy hh:mm"
+                           class="form-control bg-light border-0 px-4" required>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="TestEndDate" class="text-bold">Thời gian kết thúc</label>
+                    <input asp-for="TestEndDate" id="inp_exam-end-date" placeholder="dd/mm/yyyy hh:mm"
+                           class="form-control bg-light border-0 px-4">
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.Duration" class="text-bold">Thời gian làm bài</label>
+                    <input asp-for="ClassSubjectTest.Duration"
+                           placeholder="Nhập số phút" class="form-control bg-light border-0 px-4" required>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.Attempts" class="text-bold">Số lần làm bài</label>
+                    <input asp-for="ClassSubjectTest.Attempts"
+                           placeholder="Nhập số lần làm bài với mỗi học sinh" class="form-control bg-light border-0  px-4" required>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.PassScore" class="text-bold">Điểm đạt</label>
+                    <input asp-for="ClassSubjectTest.PassScore"
+                           placeholder="Điểm được tính theo hệ số 10." class="form-control bg-light border-0 px-4" required>
+                </div>
+
+                <div class="col-12">
+                    <input asp-for="ClassSubjectTest.ClassSubjectId" value="@Model.ClassSubjectTest.ClassSubjectId" type="hidden">
+                    <button class="btn btn-primary w-100 py-3" type="submit">TẠO BÀI THI</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+@section Scripts {
+    <script>
+        flatpickr("#inp_exam-end-date", {
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            time_24hr: true
+        });
+
+    </script>
+
+    <script>
+        flatpickr("#inp_exam-start-date", {
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            time_24hr: true
+        });
+    </script>
+}

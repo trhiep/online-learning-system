@@ -1,0 +1,51 @@
+﻿@page
+@model OnlineLearningSystem.Pages.ClassSubjects.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <hr />
+    <div class="row">
+        <div class="col-4">
+            <h4>Class Subject ID</h4>
+            @Html.DisplayFor(model => model.ClassSubject.ClassSubjectId)
+        </div>
+        <div class="col-4">
+            <h4>Class Name</h4>
+            @Html.DisplayFor(model => model.ClassSubject.Class.ClassName)
+        </div>       
+        <div class="col-4">
+            <h4>Subject Name</h4>
+            @Html.DisplayFor(model => model.ClassSubject.Subject.SubjectName)
+        </div>
+    </div>
+    <hr/>
+    <div class="row mb-4">
+        <div class="col-12">
+            <h5>Posts of @Html.DisplayFor(model => model.ClassSubject.Subject.SubjectName) in @Html.DisplayFor(model => model.ClassSubject.Class.ClassName)</h5>
+            <a class="btn btn-primary mb-3" asp-page="../SubjectPost/CreatePost" asp-route-classSubjectId="@Model.ClassSubject?.ClassSubjectId">Create Post</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="list-group">
+                @foreach (var post in Model.Posts)
+                {
+                    <div class="list-group-item">
+                        <h5 class="mb-1">@post.Title</h5>
+                        <small class="text-muted">@post.PostedDate.ToString("yyyy-MM-dd HH:mm")</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.ClassSubject?.ClassSubjectId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
