@@ -18,7 +18,7 @@ namespace OnlineLearningSystem.Pages.Notifications
             _context = context;
         }
 
-        public IList<Notification> Notification { get;set; } = default!;
+        public IList<Notification> Notification { get; set; } = default!;
 
         public async Task OnGetAsync()
         {

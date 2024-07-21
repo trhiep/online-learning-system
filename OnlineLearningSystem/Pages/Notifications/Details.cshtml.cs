@@ -18,7 +18,7 @@ namespace OnlineLearningSystem.Pages.Notifications
             _context = context;
         }
 
-      public Notification Notification { get; set; } = default!; 
+        public Notification Notification { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,12 +28,12 @@ namespace OnlineLearningSystem.Pages.Notifications
                 return NotFound();
             }
 
-            var notification = await _context.Notifications.FirstOrDefaultAsync(m => m.NotificationId == id);
+            var notification = await _context.Notifications.Include(n => n.CreatedByNavigation).FirstOrDefaultAsync(m => m.NotificationId == id);
             if (notification == null)
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Notification = notification;
             }

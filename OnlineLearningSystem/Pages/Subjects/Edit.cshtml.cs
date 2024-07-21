@@ -29,7 +29,7 @@ namespace OnlineLearningSystem.Pages.Gen
                 return NotFound();
             }
 
-            var subject =  await _context.Subjects.FirstOrDefaultAsync(m => m.SubjectId == id);
+            var subject = await _context.Subjects.FirstOrDefaultAsync(m => m.SubjectId == id);
             if (subject == null)
             {
                 return NotFound();
@@ -70,7 +70,7 @@ namespace OnlineLearningSystem.Pages.Gen
 
         private bool SubjectExists(int id)
         {
-          return (_context.Subjects?.Any(e => e.SubjectId == id)).GetValueOrDefault();
+            return (_context.Subjects?.Any(e => e.SubjectId == id)).GetValueOrDefault();
         }
     }
 }

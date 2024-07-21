@@ -19,7 +19,7 @@ namespace OnlineLearningSystem.Pages.Gen
             _context = context;
         }
 
-        public IList<Subject> Subject { get;set; } = default!;
+        public IList<Subject> Subject { get; set; } = default!;
         [BindProperty]
         public string search { get; set; }
 
@@ -32,7 +32,14 @@ namespace OnlineLearningSystem.Pages.Gen
         }
         public async Task OnPostAsync()
         {
-            SearchSubjectByName(search);
+            if (search == null || search.Length == 0)
+            {
+                LoadSubjects();
+            }
+            else
+            {
+                SearchSubjectByName(search);
+            }
         }
         void LoadSubjects()
         {

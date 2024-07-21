@@ -18,7 +18,7 @@ namespace OnlineLearningSystem.Pages.Gen
             _context = context;
         }
 
-      public Subject Subject { get; set; } = default!; 
+        public Subject Subject { get; set; } = default!;
         public IList<ClassSubject> ClassSubjects { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -33,7 +33,7 @@ namespace OnlineLearningSystem.Pages.Gen
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Subject = subject;
                 GetClassBySubject(subject.SubjectId);

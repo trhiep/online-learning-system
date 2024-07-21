@@ -19,7 +19,7 @@ namespace OnlineLearningSystem.Pages.Gen
         }
 
         [BindProperty]
-      public Subject Subject { get; set; } = default!;
+        public Subject Subject { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -34,7 +34,7 @@ namespace OnlineLearningSystem.Pages.Gen
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Subject = subject;
             }

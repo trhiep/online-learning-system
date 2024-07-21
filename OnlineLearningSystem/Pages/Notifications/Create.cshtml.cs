@@ -36,19 +36,19 @@ namespace OnlineLearningSystem.Pages.Notifications
         public IList<Models.Classroom> Classrooms { get; set; } = default!;
         public IList<ClassStudent> ClassStudents { get; set; }
         [BindProperty]
-        public List<int> sendTo {  get; set; }
-        
+        public List<int> sendTo { get; set; }
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (Notification == null)
+            if (Notification == null)
             {
                 return Page();
             }
             checkRole();
             Notification.CreatedBy = 4;
-            DateTime date= DateTime.Now;
+            DateTime date = DateTime.Now;
             Notification.CreatedDate = date;
             _context.Notifications.Add(Notification);
             await _context.SaveChangesAsync();
@@ -56,6 +56,7 @@ namespace OnlineLearningSystem.Pages.Notifications
 
             foreach (var id in sendTo)
             {
+                List<Account> list = _context.Accounts.Include(a => a.ClassStudents).ToList();
                 Account acc = _context.Accounts.Find(id);
                 if (acc != null)
                 {
