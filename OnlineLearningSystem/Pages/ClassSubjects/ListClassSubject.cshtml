@@ -9,9 +9,14 @@
 
 <h1> SUBJECT @ViewData["className"] </h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+@if (Model.IsAdminOrFormTeacher)
+{
+    <p>
+        <a asp-page="Create" asp-route-id="@Model.ClassId">Create New</a> |
+        <a asp-page="Create">Manage Student in class @ViewData["className"]</a> 
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -41,7 +46,6 @@
                     @Html.DisplayFor(modelItem => item.SubjectTeacherNavigation.Fullname)
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.ClassSubjectId">Edit</a> |
                     <a asp-page="./Details" asp-route-id="@item.ClassSubjectId">Details</a> |
                     <a asp-page="./Delete" asp-route-id="@item.ClassSubjectId">Delete</a>
                 </td>
