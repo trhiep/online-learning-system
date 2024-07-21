@@ -5,11 +5,14 @@
     ViewData["Title"] = "Index";
 }
 
+
 <h1>Index</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+
+
+
+@* <a asp-page="" class="btn btn-success">Create New</a> *@
+
 <table class="table">
     <thead>
         <tr>
@@ -17,10 +20,10 @@
                 @Html.DisplayNameFor(model => model.Classroom[0].ClassName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Classroom[0].IsActive)
+                Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Classroom[0].CreateByNavigation)
+                Created By
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Classroom[0].FormTeacher)
@@ -29,26 +32,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Classroom) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClassName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateByNavigation.AccountId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FormTeacher.AccountId)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ClassId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ClassId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ClassId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Classroom)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClassName)
+                </td>
+                <td>
+                    @(item.IsActive ? "Active" : "Inactive")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateByNavigation.Fullname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FormTeacher.Fullname)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.ClassId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ClassId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ClassId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -1,0 +1,324 @@
+﻿@page
+@model OnlineLearningSystem.Pages.Classrooms.ListModel
+
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<style>
+    .created-by {
+        margin-top: 5px;
+        word-break: break-word;
+        white-space: normal;
+        max-width: 150px;
+    }
+
+    .modal-dialog-centered {
+        display: flex;
+        align-items: center; /* Căn giữa theo chiều dọc */
+        justify-content: center; /* Căn giữa theo chiều ngang */
+        min-height: calc(100% - 1rem); /* Đảm bảo modal không bị cắt ở trên và dưới */
+    }
+
+    /* Tinh chỉnh khoảng cách trên và dưới */
+    .modal-content {
+        margin: 1rem; /* Điều chỉnh nếu cần thiết */
+    }
+
+    .form-check-input {
+        position: relative;
+        width: 90px;
+        height: 34px;
+        margin: 0;
+        cursor: pointer;
+        -webkit-appearance: none;
+        background-color: #e9ecef;
+        border-radius: 50%;
+        outline: none;
+        transition: background-color 0.15s ease;
+    }
+
+        .form-check-input:checked {
+            background-color: #007bff;
+        }
+
+        .form-check-input:before {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.15s ease;
+        }
+
+        .form-check-input:checked:before {
+            transform: translateX(57px);
+        }
+
+
+    .form-check-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .form-check-sign {
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        position: relative;
+        margin-left: 10px;
+    }
+</style>
+
+<!--Modal Create Class-->
+<div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createClassModalLabel">Tạo mới 1 lớp học</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createClassForm">
+                    <div class="mb-2">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group m-3">
+                            <label asp-for="NewClassroomData.ClassName" class="control-label pb-1">Tên lớp học</label>
+                            <input asp-for="NewClassroomData.ClassName" class="form-control" />
+                            <span asp-validation-for="NewClassroomData.ClassName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group m-3">
+                            <label asp-for="NewClassroomData.CreateBy" class="control-label pb-1">Được tạo bởi</label>
+                            <select id="createBy" asp-for="NewClassroomData.CreateBy" class="form-control"></select>
+                        </div>
+                        <div class="form-group m-3">
+                            <label asp-for="NewClassroomData.FormTeacherId" class="control-label pb-1">Giáo viên chủ nhiệm</label>
+                            <select id="formTeacherId" asp-for="NewClassroomData.FormTeacherId" class="form-control"></select>
+                        </div>
+                        <div class="form-group form-check ms-0 m-3">
+                            <label class="form-check-label d-flex align-items-center">
+                                <span class="me-5">Trạng thái</span>
+                                <input type="checkbox" asp-for="NewClassroomData.IsActive" class="form-check-input" id="isActiveToggle">
+                                <span class="form-check-sign"></span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="createClassBtn">Tạo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Modal Update Class-->
+<div class="modal fade" id="updateClassModal" tabindex="-1" aria-labelledby="updateClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateClassModalLabel">Chỉnh sửa lớp học</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateClassForm" method="post">
+                    <input type="hidden" asp-for="SelectedClassroomData.ClassId" />
+                    <div class="mb-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group m-3">
+                            <label asp-for="SelectedClassroomData.ClassName" class="control-label pb-1">Tên lớp học</label>
+                            <input asp-for="SelectedClassroomData.ClassName" class="form-control" />
+                            <span asp-validation-for="SelectedClassroomData.ClassName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group m-3">
+                            <label asp-for="SelectedClassroomData.CreateBy" class="control-label pb-1">Được tạo bởi</label>
+                            <select id="createBy2" asp-for="SelectedClassroomData.CreateBy" class="form-control"></select>
+                        </div>
+                        <div class="form-group m-3">
+                            <label asp-for="SelectedClassroomData.FormTeacherId" class="control-label pb-1">Giáo viên chủ nhiệm</label>
+                            <select id="formTeacherId2" asp-for="SelectedClassroomData.FormTeacherId" class="form-control"></select>
+                        </div>
+                        <div class="form-group form-check ms-0 m-3">
+                            <label class="form-check-label d-flex align-items-center">
+                                <span class="me-5">Trạng thái</span>
+                                <input type="checkbox" asp-for="SelectedClassroomData.IsActive" class="form-check-input" id="isActiveToggle2">
+                                <span class="form-check-sign"></span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="updateClassBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<h1 class="mb-4 mt-3">Danh sách các lớp học</h1>
+<p>
+    <a href="#" data-bs-toggle="modal" data-bs-target="#createClassModal" class="btn btn-success" id="openCreateClassModal">Tạo mới lớp học</a>
+</p>
+
+<div class="row row-cols-1 row-cols-md-4 g-4">
+    @foreach (var item in Model.Classroom)
+    {
+        <div class="col">
+            <div class="card">
+                @if (item.IsActive == true)
+                {
+                    <div class="card-header d-flex justify-content-center active">
+                        <div class="status-icon"></div>
+                        Đang hoạt động
+                    </div>
+                }
+                else
+                {
+                    <div class="card-header d-flex justify-content-center inactive">
+                        <div class="status-icon"></div>
+                        Không hoạt động
+                    </div>
+                }
+                <div class="card-img-container">
+                    <img src="/class-background.jpg" class="card-img-top" alt="...">
+                    <div class="overlay">
+                        <div class="btn-group">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#updateClassModal" data-class-id="@item.ClassId" class="btn btn-outline-warning" id="openUpdateClassModal">Cập nhật</a>
+                            <a href="#" class="btn btn-outline-info">Chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title text-success mb-0">@Html.DisplayFor(modelItem => item.ClassName)</h3>
+                        <div class="mb-0 created-by">
+                            <h6 class="card-subtitle text-muted">Được tạo bởi:</h6>
+                            <h6 style="margin-top: 6px">@Html.DisplayFor(modelItem => item.CreateByNavigation.Fullname)</h6>
+                        </div>
+                    </div>
+                    <hr />
+                    <h6 class="card-subtitle mb-1 text-muted">Giáo viên chủ nhiệm:</h6>
+                    @if (item.FormTeacherId != null)
+                    {
+                        <h5 class="card-text text-primary">@Html.DisplayFor(modelItem => item.FormTeacher.Fullname)</h5>
+                    }
+                    else
+                    {
+                        <h5 class="card-text text-danger">Hiện chưa có</h5>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#openCreateClassModal').on('click', function () {
+            $.ajax({
+                url: '/Classrooms/List?handler=CreateClassData',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#createBy').html(data.createByOptions || '');
+                    $('#formTeacherId').html(data.formTeacherIdOptions || '');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        $('#updateClassModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Nút đã kích hoạt modal
+            var classId = button.data('class-id'); // Lấy ClassId từ thuộc tính data-class-id
+
+            // Gọi Ajax để lấy dữ liệu và cập nhật nội dung modal
+            $.ajax({
+                url: '/Classrooms/List?handler=UpdateClassData',
+                method: 'GET',
+                data: { id: classId },
+                success: function (response) {
+                    var classData = response.classData;
+                    var selectedClassData = response.selectedClassData;
+
+                    $('#createBy2').html(classData.createByOptions || '');
+                    $('#formTeacherId2').html(classData.formTeacherIdOptions || '');
+
+                    $('input[name="SelectedClassroomData.ClassName"]').val(selectedClassData.className);
+                    $('select[name="SelectedClassroomData.CreateBy"]').val(selectedClassData.createBy);
+                    $('select[name="SelectedClassroomData.FormTeacherId"]').val(selectedClassData.formTeacherId);
+                    $('input[name="SelectedClassroomData.IsActive"]').prop('checked', selectedClassData.isActive);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Failed to fetch data:', error);
+                }
+            });
+        });
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        $('#createClassBtn').on('click', function () {
+            var formData = $('#createClassForm').serialize();
+
+            console.log(formData);
+            $.ajax({
+                url: '/Classrooms/List?handler=Create',
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        console.log(123)
+                        alert("Classroom created successfully");
+                        $('#createClassModal').hide();
+                        location.reload();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        $('#updateClassBtn').on('click', function () {
+            var formData = $('#updateClassForm').serialize();
+
+            console.log(formData);
+            $.ajax({
+                url: '/Classrooms/List?handler=Update',
+                method: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        console.log(123)
+                        alert("Classroom updated successfully");
+                        $('#updateClassModal').hide();
+                        location.reload();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+
+</script>
+
+

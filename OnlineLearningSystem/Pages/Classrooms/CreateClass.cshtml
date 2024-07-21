@@ -1,0 +1,48 @@
+﻿@page
+@model OnlineLearningSystem.Pages.Classrooms.CreateClassModel
+
+
+<div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createClassModalLabel">Create New Classroom</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createClassForm">
+                    <div class="mb-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Classroom.ClassName" class="control-label"></label>
+                            <input asp-for="Classroom.ClassName" class="form-control" />
+                            <span asp-validation-for="Classroom.ClassName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Classroom.CreateBy" class="control-label"></label>
+                            <select asp-for="Classroom.CreateBy" class="form-control" asp-items="ViewBag.CreateBy"></select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Classroom.FormTeacherId" class="control-label"></label>
+                            <select asp-for="Classroom.FormTeacherId" class="form-control" asp-items="ViewBag.FormTeacherId"></select>
+                        </div>
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="Classroom.IsActive" /> @Html.DisplayNameFor(model => model.Classroom.IsActive)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="createClassBtn">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
