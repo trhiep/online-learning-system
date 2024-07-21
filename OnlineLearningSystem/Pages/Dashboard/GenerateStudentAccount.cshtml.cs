@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineLearningSystem.Models;
+using System.Text.Json;
 
 namespace OnlineLearningSystem.Pages.Dashboard
 {
@@ -23,8 +24,9 @@ namespace OnlineLearningSystem.Pages.Dashboard
 		public List<Classroom> ClassroomList { get; set; }
 		public IActionResult OnGet()
 		{
+   
 
-			ClassroomList = _context.Classrooms.ToList();
+            ClassroomList = _context.Classrooms.ToList();
 			ClassList = (from account in _context.Accounts
 						 join classStudent in _context.ClassStudents on account.AccountId equals classStudent.StudentId
 						 join classroom in _context.Classrooms on classStudent.ClassId equals classroom.ClassId
@@ -38,20 +40,21 @@ namespace OnlineLearningSystem.Pages.Dashboard
 
 			return Page();
 		}
-        public IActionResult OnGetStudents(int classId)
+        public IActionResult OnGetStudents(int? classId)
         {
+           
             var students = (from account in _context.Accounts
                             join classStudent in _context.ClassStudents on account.AccountId equals classStudent.StudentId
                             join classroom in _context.Classrooms on classStudent.ClassId equals classroom.ClassId
                             where classStudent.ClassId == classId
                             select new
                             {
-                                AccountId = account.AccountId,
-                                studentName = account.Fullname,
-                                className = classroom.ClassName,
-                                age = account.Status // Adjust this based on what data you want to show
+                                Account = account,
+                                ClassStudent = classStudent,
+                                Classroom = classroom
+                              
                             }).ToList();
-
+            Console.WriteLine("/--- Students: " + JsonSerializer.Serialize(students));
             return new JsonResult(students);
         }
     }

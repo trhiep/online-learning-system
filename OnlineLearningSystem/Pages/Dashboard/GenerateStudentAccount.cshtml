@@ -42,20 +42,20 @@
                 </tr>
             </thead>
             <tbody id="studentTableBody">
-                @foreach (var item in Model.ClassList)
-                {
-                    <tr>
-                        <td>@item.Account.Username</td>
-                        <td>@item.Account.Fullname</td>
-                        <td>@item.Classroom.ClassName</td>
-                        <td>@item.Account.Status</td>
-                        <td>
-                            <a href="/student-profile" >
+                 @foreach (var item in Model.ClassList)
+                 {
+                     <tr>
+                         <td>@item.Account.Username</td>
+                         <td>@item.Account.Fullname</td>
+                         <td>@item.Classroom.ClassName</td>
+                         <td>@item.Account.Status</td>
+                         <td>
+                            <a asp-page="/UserProfile/StudentProfile" asp-route-id="@item.Account.AccountId">
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
-                        </td>
-                    </tr>
-                }
+                         </td>
+                     </tr>
+                 }  
             </tbody>
         </table>
     </div>
@@ -66,25 +66,30 @@
                 const selectedClassId = $(this).val();
                 if (selectedClassId) {
                     $.ajax({
-                        url: '@Url.Page("GenerateStudentAccount", "Students")' + '?classId=' + selectedClassId,
+                        url: '@Url.Page("GenerateStudentAccount")' + '?classId=' + selectedClassId,
                         type: 'GET',
                         success: function (data) {
                             const tableBody = $('#studentTableBody');
                             tableBody.empty();
-                            data.forEach(student => {
-                                const row = `<tr>
-                                                    <td>${1}</td>
-                                                    <td>${student.studentName}</td>
-                                                    <td>${student.className}</td>
-                                                    <td>${student.age}</td>
-                                                </tr>`;
-                                tableBody.append(row);
-                            });
+                            if (data.students && Array.isArray(data.students)) {
+                                data.students.forEach(student => {
+                                    const row = `<tr>
+                        <td>${student.Account.AccountId}</td>
+                        <td>${student.Account.Fullname}</td>
+                        <td>${student.Classroom.ClassName}</td>
+                        <td>${student.Account.Status ? 'Active' : 'Inactive'}</td>
+                    </tr>`;
+                                    tableBody.append(row);
+                                });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error fetching student data:', status, error);
                         }
                     });
                 }
             });
         });
     </script>
+
 </body>
 </html>
