@@ -259,6 +259,7 @@
                     $('select[name="SelectedClassroomData.CreateBy"]').val(selectedClassData.createBy);
                     $('select[name="SelectedClassroomData.FormTeacherId"]').val(selectedClassData.formTeacherId);
                     $('input[name="SelectedClassroomData.IsActive"]').prop('checked', selectedClassData.isActive);
+                    $('input[name="SelectedClassroomData.ClassId"]').val(selectedClassData.classId);
                 },
                 error: function (xhr, status, error) {
                     console.error('Failed to fetch data:', error);
@@ -304,7 +305,6 @@
                 data: formData,
                 success: function (response) {
                     if (response.success) {
-                        console.log(123)
                         alert("Classroom updated successfully");
                         $('#updateClassModal').hide();
                         location.reload();
