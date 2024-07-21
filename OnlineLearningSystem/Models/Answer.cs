@@ -13,7 +13,6 @@ namespace OnlineLearningSystem.Models
         public int QuestionAnswerId { get; set; }
         public int QuestionId { get; set; }
         public string Content { get; set; } = null!;
-        public string ImageLink { get; set; } = null!;
         public DateTime LastModifiedDate { get; set; }
         public bool IsCorrectAnswer { get; set; }
 
