@@ -1,0 +1,79 @@
+﻿@page
+@model OnlineLearningSystem.Pages.ClassSubjectTests.EditModel
+@{
+}
+
+<div class="mt-5">
+    <a href="/ClassSubjectTests/TestDetails?testId=@Model.ClassSubjectTest.TestId" class="btn btn-outline-secondary">Trở lại</a>
+</div>
+
+<div class="mt-5">
+    <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+        <div class="row">
+            <h3 class="text-uppercase mb-0">CẬP NHẬT THÔNG TIN BÀI THI @Model.ClassSubjectTest.TestName</h3>
+        </div>
+        <div class="row">
+            @if (@Model.ClassSubjectTest.TestDescription == "")
+            {
+                <p class="mb-0">Chưa có thông tin mô tả về bài thi này</p>
+            }
+            else
+            {
+                <p class="mb-0">@Model.ClassSubjectTest.TestDescription</p>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <form method="POST">
+            <div class="row g-3">
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.TestName" class="text-bold">Tên bài thi</label>
+                    <input asp-for="ClassSubjectTest.TestName"
+                           class="form-control bg-light border-0 px-4" placeholder="Nhập tên bài thi" required>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.StartDate" class="text-bold">Thời gian bắt đầu</label>
+                    <input asp-for="ClassSubjectTest.StartDate" id="inp_exam-start-date" placeholder="dd/mm/yyyy hh:mm"
+                           class="form-control bg-light border-0 px-4" required>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.EndDate" class="text-bold">Thời gian kết thúc</label>
+                    <input asp-for="ClassSubjectTest.EndDate" id="inp_exam-end-date" placeholder="dd/mm/yyyy hh:mm"
+                           class="form-control bg-light border-0 px-4">
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.Duration" class="text-bold">Thời gian làm bài (phút)</label>
+                    <input asp-for="ClassSubjectTest.Duration"
+                           placeholder="Nhập số phút" class="form-control bg-light border-0 px-4" required>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.Attempts" class="text-bold">Số lần làm bài</label>
+                    <input asp-for="ClassSubjectTest.Attempts"
+                           placeholder="Nhập số lần làm bài với mỗi học sinh" class="form-control bg-light border-0  px-4" required>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="ClassSubjectTest.PassScore" class="text-bold">Điểm đạt (thang điểm 10)</label>
+                    <input asp-for="ClassSubjectTest.PassScore"
+                           placeholder="Điểm được tính theo hệ số 10." class="form-control bg-light border-0 px-4" required>
+                </div>
+
+                <div class="col-12">
+                    <input asp-for="ClassSubjectTest.ClassSubjectId" value="@Model.ClassSubjectTest.ClassSubjectId" type="hidden">
+                    <input asp-for="ClassSubjectTest.TestId" value="@Model.ClassSubjectTest.TestId" type="hidden">
+                    <button class="btn btn-outline-success" style="width: 100%" type="submit">LƯU BÀI THI</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+  
+}
