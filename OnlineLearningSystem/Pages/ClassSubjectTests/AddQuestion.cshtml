@@ -1,0 +1,417 @@
+﻿@page
+@model OnlineLearningSystem.Pages.ClassSubjectTests.AddQuestionModel
+@using OnlineLearningSystem.Models
+@{
+    ViewData["Title"] = "QUẢN LÝ CÂU HỎI CHO BÀI THI" + @Model.SubjectTest.TestName.ToUpper();
+    int count = 1;
+}
+
+<div class="mt-5">
+    <h1>QUẢN LÝ CÂU HỎI CHO BÀI THI @Model.SubjectTest.TestName.ToUpper()</h1>
+
+    <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+        <div class="row">
+            <div class="col-md-10">
+                <h3 class="text-uppercase mb-0">THÊM CÂU HỎI</h3>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-outline-success btn-import-excel" style="width: 100%"><i class="bi bi-table"></i> Nhập từ Excel</button>
+            </div>
+        </div>
+    </div>
+    <form id="questionForm" method="post">
+        <label for="questionTitle" class="text-bold">Câu hỏi:</label>
+        <input type="text" asp-for="TestQuestion.Content" id="questionTitle" class="form-control border-1" required>
+        <input type="hidden" asp-for="TestQuestion.TestId" value="@ViewBag.testId">
+        <br><br>
+
+        <label class="text-bold">Danh sách câu trả lời:</label>
+        <table id="answersTable" class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 20%">Câu trả lời đúng</th>
+                    <th style="width: 70%">Nội dung</th>
+                    <th style="width: 10%">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <input type="hidden" id="AnswersJSON" name="AnswersJSON" />
+        <br><br>
+
+        <label class="text-bold">Thêm câu trả lời:</label>
+        <div class="row">
+            <div class="col-md-10">
+                <input type="text" id="answerContent" name="answerContent" class="form-control border-1">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-outline-primary" onclick="addAnswer()" style="width: 100%">Thêm Câu Trả Lời</button>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-outline-success" style="width: 100%">Thêm Câu Hỏi</button>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+<div class="mt-5">
+    <div class="border-start border-5 border-success ps-5 mb-5">
+        <div class="row">
+            <div class="col-md-10">
+                <h3 class="text-uppercase mb-0">DANH SÁCH CÂU HỎI HIỆN TẠI</h3>
+                <h6 class="text-uppercase mb-0">Hiện tại đề thi này có @Model.TestQuestions.Count() câu hỏi</h6>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-outline-success btn-export-excel" style="width: 100%"><i class="bi bi-table"></i> Xuất ra Excel</button>
+            </div>
+        </div>
+    </div>
+
+    @foreach (var item in Model.TestQuestions)
+    {
+        <div class="card mt-3">
+            <h5 class="card-header">Câu hỏi @count</h5>
+            <div class="card-body">
+                <h5 class="card-title">@item.Content</h5>
+                @foreach (var ans in ViewBag.Answers as IEnumerable<Answer>)
+                {
+                    if (ans.QuestionId == item.TestQuestionId)
+                    {
+                        <div>
+                            <input type="checkbox"
+                                   id="answer_@ans.QuestionAnswerId"
+                                   name="answers"
+                                   value="@ans.QuestionAnswerId" disabled
+                            @(ans.IsCorrectAnswer ? "checked" : "") />
+                            <label for="answer_@ans.QuestionAnswerId">@ans.Content</label>
+                        </div>
+                    }
+                }
+
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-outline-primary edit-question-btn" data-question-id="@item.TestQuestionId">Chỉnh Sửa</button>
+                <button class="btn btn-outline-danger delete-question-btn" data-question-id="@item.TestQuestionId">Xoá</button>
+            </div>
+        </div>
+        count++;
+    }
+</div>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="editQuestionModal" tabindex="-1" role="dialog" aria-labelledby="editQuestionModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-lg-custom" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editQuestionModal">Sửa câu hỏi</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="EditQuestion">
+                    <label for="editQuestionTitle" class="text-bold">Câu hỏi:</label>
+                    <input type="text" id="editQuestionTitle" class="form-control border-1" required>
+                    <input type="hidden" id="editQuestionId" name="editQuestionId">
+                    <br><br>
+
+                    <label class="text-bold">Danh sách câu trả lời:</label>
+                    <table id="editAnswersTable" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%">Câu trả lời đúng</th>
+                                <th style="width: 70%">Nội dung</th>
+                                <th style="width: 10%">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <input type="hidden" id="EditAnswersJSON" name="EditAnswersJSON" />
+                    <br><br>
+
+                    <label class="text-bold">Thêm câu trả lời:</label>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <input type="text" id="editAnswerContent" name="editAnswerContent" class="form-control border-1">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-primary" onclick="addEditAnswer()" style="width: 100%">Thêm Câu Trả Lời</button>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-outline-success" style="width: 100%">Lưu Câu Hỏi</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importExcelModal" tabindex="-1" role="dialog" aria-labelledby="importExcelModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-lg-custom" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importExcelModal">Thêm câu hỏi từ Excel</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="ImportQuestion" enctype="multipart/form-data">
+                    <div class="row mt-5">
+                        <div class="form-group">
+                            <label for="ExcelFile">Chọn file Excel</label>
+                            <input type="file" class="form-control" id="ExcelFile" name="ExcelFile" />
+                        </div>
+                    </div>
+                    <input type="hidden" name="TestID" value="@ViewBag.testId">
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-outline-success" style="width: 100%">Thêm toàn bộ</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exportExcelModal" tabindex="-1" role="dialog" aria-labelledby="exportExcelModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-lg-custom" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportExcelModal">Xuất file Excel</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="ExportQuestions">
+                    <input type="hidden" name="TestID" value="@ViewBag.testId">
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-outline-success" style="width: 100%">Tải về file Excel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.delete-question-btn').click(function () {
+                var questionId = $(this).data('question-id');
+                Swal.fire({
+                    title: "Bạn có chắc chắn muốn xoá câu hỏi này?",
+                    icon: 'warning',
+                    showDenyButton: true,
+                    confirmButtonText: "No", // Confirm button moved to the right
+                    denyButtonText: "Yes" // Deny button moved to the left
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        window.location.href = '@Url.Page("DeleteQuestion")?id=' + questionId;
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.btn-import-excel').click(function () {
+                // Show the modal
+                $('#importExcelModal').modal('show');
+            });
+
+            // Handle modal close event
+            $('#importExcelModal .btn-secondary').click(function () {
+                $('#importExcelModal').modal('hide');
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.btn-export-excel').click(function () {
+                // Show the modal
+                $('#exportExcelModal').modal('show');
+            });
+
+            // Handle modal close event
+            $('#exportExcelModal .btn-secondary').click(function () {
+                $('#exportExcelModal').modal('hide');
+            });
+        });
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('.edit-question-btn').click(function () {
+                // Get the question ID and card content
+                var questionId = $(this).data('question-id');
+                var card = $(this).closest('.card');
+                var questionTitle = card.find('.card-title').text().trim();
+                var answers = card.find('.card-body input[type="checkbox"]');
+
+                // Populate the modal with the question title
+                $('#editQuestionTitle').val(questionTitle);
+                $('#editQuestionId').val(questionId);
+
+                // Clear existing answers in the table
+                $('#editAnswersTable tbody').empty();
+
+                // Populate the modal answers table
+                answers.each(function () {
+                    var isChecked = $(this).is(':checked');
+                    var value = $(this).val();
+                    var label = $(this).next('label').text().trim();
+                    var answerId = $(this).val();
+
+                    $('#editAnswersTable tbody').append(`
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" ${isChecked ? 'checked' : ''}>
+                                                <input type="hidden" value="${answerId}">
+                                            </td>
+                                            <td>${label}</td>
+                                            <td><button type="button" class="btn btn-outline-danger btn-sm remove-answer-btn">Xoá</button></td>
+                                        </tr>
+                                    `);
+                });
+
+                // Initialize the EditAnswersJSON field (if needed later)
+                $('#EditAnswersJSON').val(JSON.stringify(getAnswersData()));
+
+                // Show the modal
+                $('#editQuestionModal').modal('show');
+            });
+
+            // Update EditAnswersJSON when checkbox is changed
+            $(document).on('change', '#editAnswersTable input[type="checkbox"]', function () {
+                $('#EditAnswersJSON').val(JSON.stringify(getAnswersData()));
+            });
+
+            // Remove answer button handler
+            $(document).on('click', '.remove-answer-btn', function () {
+                $(this).closest('tr').remove();
+                $('#EditAnswersJSON').val(JSON.stringify(getAnswersData()));
+            });
+
+            // Function to get answers data
+            function getAnswersData() {
+                var answers = [];
+                $('#editAnswersTable tbody tr').each(function () {
+                    var isChecked = $(this).find('input[type="checkbox"]').is(':checked');
+                    var answerId = $(this).find('input[type="hidden"]').val();
+                    var content = $(this).find('td').eq(1).text().trim();
+                    answers.push({ isChecked: isChecked, content: content, answerId: answerId });
+                });
+                return answers;
+            }
+
+            // Handle modal close event
+            $('#editQuestionModal .btn-secondary').click(function () {
+                $('#editQuestionModal').modal('hide');
+            });
+
+            // Add answer button handler
+            window.addEditAnswer = function () {
+                var answerContent = $('#editAnswerContent').val().trim();
+                if (answerContent) {
+                    $('#editAnswersTable tbody').append(`
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input">
+                                                <input type="hidden" value="0">
+                                            </td>
+                                            <td>${answerContent}</td>
+                                            <td><button type="button" class="btn btn-outline-danger btn-sm remove-answer-btn">Xoá</button></td>
+                                        </tr>
+                                    `);
+                    $('#editAnswerContent').val('');
+                    $('#EditAnswersJSON').val(JSON.stringify(getAnswersData()));
+                }
+            }
+        });
+    </script>
+
+
+
+    <script>
+        function addAnswer() {
+            const answerContent = document.getElementById('answerContent').value;
+            if (answerContent.trim() === "") {
+                alert("Nội dung câu trả lời không được để trống");
+                return;
+            }
+
+            const answersTable = document.getElementById('answersTable').getElementsByTagName('tbody')[0];
+
+            const newRow = answersTable.insertRow();
+
+            const cell1 = newRow.insertCell(0);
+            const checkbox = document.createElement('input');
+            checkbox.className = 'form-check-input';
+            checkbox.type = 'checkbox';
+            checkbox.addEventListener('change', updateJsonData);  // Thêm event listener để cập nhật dữ liệu khi checkbox thay đổi
+            cell1.appendChild(checkbox);
+
+            const cell2 = newRow.insertCell(1);
+            const label = document.createElement('label');
+            label.className = 'form-check-label';
+            label.textContent = answerContent;
+            cell2.appendChild(label);
+
+            const cell3 = newRow.insertCell(2);
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Xóa';
+            deleteButton.type = 'button';
+            deleteButton.className = 'btn btn-outline-danger';
+            deleteButton.style.width = '100%';
+            deleteButton.onclick = function () {
+                answersTable.removeChild(newRow);
+                updateJsonData();  // Cập nhật dữ liệu khi xóa hàng
+            };
+            cell3.appendChild(deleteButton);
+
+            document.getElementById('answerContent').value = '';
+            updateJsonData();  // Cập nhật dữ liệu khi thêm câu trả lời
+        }
+
+        function updateJsonData() {
+            const answersTable = document.getElementById('answersTable').getElementsByTagName('tbody')[0];
+            const rows = answersTable.getElementsByTagName('tr');
+
+            const data = [];
+
+            for (const row of rows) {
+                const cells = row.getElementsByTagName('td');
+                const checkbox = cells[0].getElementsByTagName('input')[0];
+                const label = cells[1].getElementsByTagName('label')[0];
+
+                data.push({
+                    isChecked: checkbox.checked,
+                    content: label.textContent
+                });
+            }
+
+            document.getElementById('AnswersJSON').value = JSON.stringify(data);
+        }
+
+        // Gọi updateJsonData() khi trang tải để khởi tạo giá trị JSON từ bảng (nếu có dữ liệu)
+        window.onload = updateJsonData;
+    </script>
+}

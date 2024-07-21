@@ -1,0 +1,43 @@
+﻿@page
+@model OnlineLearningSystem.Pages.Classrooms.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Classroom</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Classroom.ClassName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Classroom.ClassName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Classroom.IsActive)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Classroom.IsActive)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Classroom.CreateByNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Classroom.CreateByNavigation.AccountId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Classroom.FormTeacher)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Classroom.FormTeacher.AccountId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Classroom?.ClassId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
