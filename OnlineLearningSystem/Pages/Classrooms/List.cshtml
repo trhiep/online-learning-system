@@ -66,7 +66,7 @@
         cursor: pointer;
     }
 
-    .form-check-sign {
+    .lamdt-form-check-sign {
         display: inline-block;
         width: 60px;
         height: 34px;
@@ -93,10 +93,6 @@
                             <span asp-validation-for="NewClassroomData.ClassName" class="text-danger"></span>
                         </div>
                         <div class="form-group m-3">
-                            <label asp-for="NewClassroomData.CreateBy" class="control-label pb-1">Được tạo bởi</label>
-                            <select id="createBy" asp-for="NewClassroomData.CreateBy" class="form-control"></select>
-                        </div>
-                        <div class="form-group m-3">
                             <label asp-for="NewClassroomData.FormTeacherId" class="control-label pb-1">Giáo viên chủ nhiệm</label>
                             <select id="formTeacherId" asp-for="NewClassroomData.FormTeacherId" class="form-control"></select>
                         </div>
@@ -104,7 +100,7 @@
                             <label class="form-check-label d-flex align-items-center">
                                 <span class="me-5">Trạng thái</span>
                                 <input type="checkbox" asp-for="NewClassroomData.IsActive" class="form-check-input" id="isActiveToggle">
-                                <span class="form-check-sign"></span>
+                                <span class="lamdt-form-check-sign"></span>
                             </label>
                         </div>
                     </div>
@@ -138,10 +134,6 @@
                             <span asp-validation-for="SelectedClassroomData.ClassName" class="text-danger"></span>
                         </div>
                         <div class="form-group m-3">
-                            <label asp-for="SelectedClassroomData.CreateBy" class="control-label pb-1">Được tạo bởi</label>
-                            <select id="createBy2" asp-for="SelectedClassroomData.CreateBy" class="form-control"></select>
-                        </div>
-                        <div class="form-group m-3">
                             <label asp-for="SelectedClassroomData.FormTeacherId" class="control-label pb-1">Giáo viên chủ nhiệm</label>
                             <select id="formTeacherId2" asp-for="SelectedClassroomData.FormTeacherId" class="form-control"></select>
                         </div>
@@ -149,7 +141,7 @@
                             <label class="form-check-label d-flex align-items-center">
                                 <span class="me-5">Trạng thái</span>
                                 <input type="checkbox" asp-for="SelectedClassroomData.IsActive" class="form-check-input" id="isActiveToggle2">
-                                <span class="form-check-sign"></span>
+                                <span class="lamdt-form-check-sign"></span>
                             </label>
                         </div>
                     </div>
@@ -165,9 +157,15 @@
 
 
 <h1 class="mb-4 mt-3">Danh sách các lớp học</h1>
-<p>
-    <a href="#" data-bs-toggle="modal" data-bs-target="#createClassModal" class="btn btn-success" id="openCreateClassModal">Tạo mới lớp học</a>
-</p>
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#createClassModal" class="btn btn-success" id="openCreateClassModal">Tạo mới lớp học</a>
+    </div>
+    <form class="d-flex" id="searchClassForm">
+        <input type="text" id="sreachClassText" name="search" class="me-2" placeholder="Tìm kiếm lớp học" aria-label="Search">
+        <button class="btn btn-primary" id="searchClassbtn">Tìm kiếm</button>
+    </form>
+</div>
 
 <div class="row row-cols-1 row-cols-md-4 g-4">
     @foreach (var item in Model.Classroom)
@@ -224,13 +222,28 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+
+        $('#searchClassbtn').on('click', function () {
+            var formData = $("3searchClassForm").serialize();
+            $.ajax({
+                url: '/Classrooms/List?handler=CreateClassData',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#formTeacherId').html(data.formTeacherIdOptions || '');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
         $('#openCreateClassModal').on('click', function () {
             $.ajax({
                 url: '/Classrooms/List?handler=CreateClassData',
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    $('#createBy').html(data.createByOptions || '');
                     $('#formTeacherId').html(data.formTeacherIdOptions || '');
                 },
                 error: function (xhr, status, error) {
@@ -252,12 +265,14 @@
                     var classData = response.classData;
                     var selectedClassData = response.selectedClassData;
 
-                    $('#createBy2').html(classData.createByOptions || '');
                     $('#formTeacherId2').html(classData.formTeacherIdOptions || '');
 
                     $('input[name="SelectedClassroomData.ClassName"]').val(selectedClassData.className);
-                    $('select[name="SelectedClassroomData.CreateBy"]').val(selectedClassData.createBy);
-                    $('select[name="SelectedClassroomData.FormTeacherId"]').val(selectedClassData.formTeacherId);
+                    if (selectedClassData.formTeacherId == null) {
+                        $('select[name="SelectedClassroomData.FormTeacherId"]').val(0);
+                    } else {
+                        $('select[name="SelectedClassroomData.FormTeacherId"]').val(selectedClassData.formTeacherId);
+                    }
                     $('input[name="SelectedClassroomData.IsActive"]').prop('checked', selectedClassData.isActive);
                     $('input[name="SelectedClassroomData.ClassId"]').val(selectedClassData.classId);
                 },
@@ -281,7 +296,6 @@
                 data: formData,
                 success: function (response) {
                     if (response.success) {
-                        console.log(123)
                         alert("Classroom created successfully");
                         $('#createClassModal').hide();
                         location.reload();
@@ -317,6 +331,9 @@
                 }
             });
         });
+
+
+
     });
 
 </script>

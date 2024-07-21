@@ -40,7 +40,6 @@ namespace OnlineLearningSystem.Pages.Logins
 
 				HttpContext.Session.SetString("UserSession", loginAccount.Username);
                 HttpContext.Session.SetString("RoleSession", loginAccount.Role);
-
                 return RedirectToPage("/Index");
             }
 			else
