@@ -13,8 +13,17 @@ namespace OnlineLearningSystem.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+    
+
+        public IActionResult OnGet()
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserSession")))
+            {
+                return RedirectToPage("Logins/Login");
+            }
+
+            // Người dùng đã đăng nhập, tiếp tục xử lý
+            return Page();
         }
     }
 }

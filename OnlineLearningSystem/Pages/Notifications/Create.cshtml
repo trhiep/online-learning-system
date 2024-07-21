@@ -1,0 +1,66 @@
+﻿@page
+@model OnlineLearningSystem.Pages.Notifications.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Notification</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Notification.Title" class="control-label"></label>
+                <input asp-for="Notification.Title" class="form-control" />
+                <span asp-validation-for="Notification.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notification.Content" class="control-label"></label>
+                <input asp-for="Notification.Content" class="form-control" />
+                <span asp-validation-for="Notification.Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" name="all" id="all" onclick="chooseAll()"/>All
+                <br />
+                @{
+                    int no = 0;
+                @foreach(var c in Model.Classrooms)
+                {
+                    no++;
+                    <span class="m-1"></span>
+                    <input type="checkbox" class="classroom" id="class-@no" onclick="chooseAllIn(@no)"/>
+                    @c.ClassName
+                    <br />
+                    @foreach(var s in Model.ClassStudents)
+                    {
+                        @if (c.ClassId.Equals(s.ClassId))
+                        {
+                            <span class="m-2"></span>
+                                <input type="checkbox" name="sendTo" class="@no student" id="@s.StudentId" value="@s.StudentId" onchange="change(@s.StudentId)" />
+                            @s.Student.Fullname
+                            <br />
+                        }
+                    }
+
+                    }
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-outline-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index" class="btn btn-outline-success">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script src="~/js/choose-account-notification.js"></script>

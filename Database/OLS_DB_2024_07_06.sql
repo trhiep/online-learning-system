@@ -6,6 +6,10 @@
 
 -- tables
 -- Table: Account
+CREATE DATABASE OLS
+GO
+USE OLS
+GO
 CREATE TABLE Account (
     AccountID int  NOT NULL IDENTITY(1, 1),
     Username varchar(50)  NOT NULL,

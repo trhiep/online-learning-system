@@ -1,0 +1,208 @@
+﻿@page
+@model OnlineLearningSystem.Pages.ClassSubjectTests.TestDetailsModel
+@{
+    ViewData["Title"] = "CHI TIẾT " + @Model.ClassSubjectTest.TestName;
+}
+
+<div class="mt-5">
+    <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+        <div class="row">
+            <h3 class="text-uppercase mb-0">Thông tin chi tiết bài thi @Model.ClassSubjectTest.TestName</h3>
+        </div>
+        <div class="row">
+            @if (@Model.ClassSubjectTest.TestDescription == "")
+            {
+                <p class="mb-0">Chưa có thông tin mô tả về bài thi này</p>
+            }
+            else
+            {
+                <p class="mb-0">@Model.ClassSubjectTest.TestDescription</p>
+            }
+
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <th style="width: 10%">
+                Số câu
+            </th>
+            <td style="width: 90%">
+                @Model.ClassSubjectTest.TestQuestions.Count()
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 10%">
+                Thời gian bắt đầu
+            </th>
+            <td style="width: 90%">
+                @Model.ClassSubjectTest.StartDate.ToString("dd/MM/yyyy HH:mm")
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 10%">
+                Thời gian kết thúc
+            </th>
+            <td style="width: 90%">
+                @Model.ClassSubjectTest.EndDate.ToString("dd/MM/yyyy HH:mm")
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 10%">
+                Thời gian thi
+            </th>
+            <td style="width: 90%">
+                @Model.ClassSubjectTest.Duration phút
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 10%">
+                Số lần có thể làm bài
+            </th>
+            <td style="width: 90%">
+                @Model.ClassSubjectTest.Attempts
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 30%">
+                Điểm đậu
+            </th>
+            <td style="width: 70%">
+                @Model.ClassSubjectTest.PassScore / 10
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button class="btn btn-outline-secondary">Trở lại</button>
+
+@if (DateTime.Now >= @Model.ClassSubjectTest.StartDate && DateTime.Now <= @Model.ClassSubjectTest.EndDate)
+{
+    <button data-test-id="@Model.ClassSubjectTest.TestId" class="btn btn-outline-warning btn-enter-test">Vào thi</button>
+}
+
+<div class="modal fade" id="enterTestModal" tabindex="-1" role="dialog" aria-labelledby="enterTestModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 style="color: red">VUI LÒNG ĐỌC KỸ QUY ĐỊNH THI TRƯỚC KHI BẮT ĐẦU LÀM BÀI</h6>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center">QUY ĐỊNH LÀM BÀI THI</h5>
+                <h6>1. Bạn phải xác nhận rằng đã tắt tất cả các tab trình duyệt khác trước khi bắt đầu.</h6>
+                <h6>2. Khi đã bắt đầu làm bài thi, bất kỳ thao tác gì của bạn đều sẽ được ghi lại và báo cáo cho giáo viên.</h6>
+                <h6>3. Bài thi sẽ được lưu tự động mỗi 3 phút.</h6>
+                <h6>4. Không được tải lại trang hoặc thoát trình duyệt. Bạn sẽ mất quyền vào bài thi nếu thực hiện điều này.</h6>
+                <h6>5. Nếu không may thoát trình duyệt khi đang làm bài, vui lòng báo cáo với giáo viên. Tuy nhiên bạn sẽ phải làm lại từ đầu.</h6>
+                <h6>6. Hết thời gian thi, bài thi sẽ được nộp tự động.</h6>
+                <h6>7. Mọi quyết định cuối cùng thuộc về giáo viên của bạn.</h6>
+
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" value="" id="ckb-accept-eula">
+                    <label class="form-check-label black-bold" for="ckb-accept-eula">
+                        TÔI ĐÃ ĐỌC VÀ ĐỒNG Ý MỌI QUY ĐỊNH NÊU TRÊN
+                    </label>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" style="width: 100%">ĐÓNG</button>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="/ClassSubjectTests/TakeTest?testId=@Model.ClassSubjectTest.TestId" id="btn-start-test" type="button" class="btn btn-outline-warning" style="width: 100%" tabindex="-1">BẮT ĐẦU LÀM BÀI</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+        <div class="row">
+            <h3 class="text-uppercase mb-0">Lịch sử làm bài</h3>
+        </div>
+    </div>
+
+    @if (Model.TestResults.Any())
+    {
+        @foreach (var result in Model.TestResults)
+        {
+            <div class="row mb-3">
+                <h6>Lần @result.AttemptsNo</h6>
+                <span class="black-bold">Ngày làm bài: @result.TakenDate.ToString("dd/MM/yyyy HH:mm")</span>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width: 10%">
+                                Số câu đúng
+                            </th>
+                            <td style="width: 90%">
+                                @result.CorrectAnswers / @Model.ClassSubjectTest.TestQuestions.Count()
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="width: 10%">
+                                Điểm
+                            </th>
+                            <td style="width: 90%">
+                                @result.Grade.ToString("F2") / 10
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="width: 10%">
+                                Kết quả
+                            </th>
+                            @if (result.Status == "ĐẠT"){
+                                <td style="width: 90%" class="black-green">
+                                    @result.Status
+                                </td>
+                            } else
+                            {
+                                <td style="width: 90%" class="black-red">
+                                    @result.Status
+                                </td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-outline-primary">XEM CHI TIẾT</button>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btn-enter-test').click(function () {
+                // Show the modal
+                $('#enterTestModal').modal('show');
+            });
+
+            // Handle modal close event
+            $('#enterTestModal .btn-outline-secondary').click(function () {
+                $('#enterTestModal').modal('hide');
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var checkbox = document.getElementById('ckb-accept-eula');
+            var startButton = document.getElementById('btn-start-test');
+
+            function toggleButton() {
+                startButton.classList.toggle('disabled', !checkbox.checked);
+                startButton.tabIndex = checkbox.checked ? 0 : -1;
+            }
+
+            checkbox.addEventListener('change', toggleButton);
+
+            // Initial state
+            toggleButton();
+        });
+    </script>
+}

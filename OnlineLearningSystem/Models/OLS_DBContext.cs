@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -22,7 +23,6 @@ namespace OnlineLearningSystem.Models
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
         public virtual DbSet<ClassSubjectPost> ClassSubjectPosts { get; set; } = null!;
         public virtual DbSet<ClassSubjectTest> ClassSubjectTests { get; set; } = null!;
-        public virtual DbSet<ClassSubjectTestAttachment> ClassSubjectTestAttachments { get; set; } = null!;
         public virtual DbSet<Classroom> Classrooms { get; set; } = null!;
         public virtual DbSet<ConversationMember> ConversationMembers { get; set; } = null!;
         public virtual DbSet<CoversationMessage> CoversationMessages { get; set; } = null!;
@@ -39,8 +39,8 @@ namespace OnlineLearningSystem.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var conf = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-                optionsBuilder.UseSqlServer(conf.GetConnectionString("DBContext"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=OLS_DB_NEW;User ID=sa;Password=12345678");
             }
         }
 
@@ -187,22 +187,6 @@ namespace OnlineLearningSystem.Models
                     .HasForeignKey(d => d.ClassSubjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ClassTest_ClassSubject");
-            });
-
-            modelBuilder.Entity<ClassSubjectTestAttachment>(entity =>
-            {
-                entity.HasKey(e => e.TestAttachmentId)
-                    .HasName("ClassSubjectTestAttachments_pk");
-
-                entity.Property(e => e.TestAttachmentId).HasColumnName("TestAttachmentID");
-
-                entity.Property(e => e.TestId).HasColumnName("TestID");
-
-                entity.HasOne(d => d.Test)
-                    .WithMany(p => p.ClassSubjectTestAttachments)
-                    .HasForeignKey(d => d.TestId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ClassSubjectTestAttachments_ClassSubjectTest");
             });
 
             modelBuilder.Entity<Classroom>(entity =>
@@ -370,7 +354,9 @@ namespace OnlineLearningSystem.Models
 
                 entity.Property(e => e.StudentTestAnswerId).HasColumnName("StudentTestAnswerID");
 
-                entity.Property(e => e.QuestionAnswerId).HasColumnName("QuestionAnswerID");
+                entity.Property(e => e.AnswerTime).HasColumnType("datetime");
+
+                entity.Property(e => e.SelectedAnswerId).HasColumnName("SelectedAnswerID");
 
                 entity.Property(e => e.StudentId).HasColumnName("StudentID");
 
@@ -378,9 +364,9 @@ namespace OnlineLearningSystem.Models
 
                 entity.Property(e => e.TestQuestionId).HasColumnName("TestQuestionID");
 
-                entity.HasOne(d => d.QuestionAnswer)
+                entity.HasOne(d => d.SelectedAnswer)
                     .WithMany(p => p.StudentTestAnswers)
-                    .HasForeignKey(d => d.QuestionAnswerId)
+                    .HasForeignKey(d => d.SelectedAnswerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("StudentTestAnswer_Answer");
 

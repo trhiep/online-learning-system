@@ -458,3 +458,95 @@
 }
 
 
+.carousel-item {
+    min-width: 300px;
+}
+
+.owl-nav button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: #198754;
+}
+
+    .owl-nav button.owl-prev {
+        left: -30px;
+    }
+
+    .owl-nav button.owl-next {
+        right: -30px;
+    }
+
+
+.text-bold {
+    font-weight: bold;
+}
+
+.span-warning-italic {
+    color: red;
+    font-style: italic;
+}
+
+.modal-lg-custom {
+    max-width: 60%;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.question-note {
+    font-style: italic
+}
+
+.answer-text {
+    color: black
+}
+
+.black-bold {
+    color: black;
+    font-weight: bold
+}
+
+.black-red {
+    color: red;
+    font-weight: bold
+}
+
+.black-green {
+    color: forestgreen;
+    font-weight: bold
+}
+
+.header-checked {
+    color: steelblue;
+}
+
+#progress-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+#progress-bar {
+    height: 30px;
+    width: 0;
+    background-color: #4caf50;
+    text-align: center;
+    color: white;
+    line-height: 30px; /* Vertically center the text */
+    border-radius: 5px;
+}
+
+#time-display {
+    font-size: 18px;
+}
+
