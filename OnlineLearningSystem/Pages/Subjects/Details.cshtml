@@ -23,7 +23,9 @@
     <a asp-page="./Edit" asp-route-id="@Model.Subject?.SubjectId" class="btn btn-outline-success">Edit</a> |
     <a asp-page="./Index" class="btn btn-outline-success">Back to List</a>
 </div>
+<hr />
 <div id="list-class">
+    <h5>List of classes study:</h5>
     <table class="table">
         <thead>
             <tr>
@@ -45,7 +47,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.SubjectTeacher)
                     </td>
-                    
+
                 </tr>
             }
         </tbody>

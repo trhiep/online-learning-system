@@ -18,30 +18,38 @@ namespace OnlineLearningSystem.Pages.Notifications
             _context = context;
         }
 
-      public Notification Notification { get; set; } = default!; 
+        public Notification Notification { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            checkRole();
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             if (id == null || _context.Notifications == null)
             {
                 return NotFound();
             }
 
-            var notification = await _context.Notifications.FirstOrDefaultAsync(m => m.NotificationId == id);
+            var notification = await _context.Notifications.Include(n => n.CreatedByNavigation).FirstOrDefaultAsync(m => m.NotificationId == id);
             if (notification == null)
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Notification = notification;
             }
             return Page();
         }
-        void checkRole()
+        bool checkRole()
         {
-
+            string role = HttpContext.Session.GetString("RoleSession");
+            if (string.IsNullOrEmpty(role))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

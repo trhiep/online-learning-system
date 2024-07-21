@@ -9,9 +9,9 @@ namespace OnlineLearningSystem.Pages.Logins
 
         public IActionResult OnGet()
         {
-           
-                HttpContext.Session.Remove("UserSession");
-                HttpContext.Session.Clear();
+
+            HttpContext.Session.Remove("UserSession");
+            HttpContext.Session.Clear();
             // Điều hướng về trang chính hoặc trang đăng nhập
             return RedirectToPage("/Authen/Login");
 

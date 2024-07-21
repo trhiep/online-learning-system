@@ -20,15 +20,16 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
         public IList<ClassSubject> ClassSubject { get; set; } = default!;
 
         [BindProperty(SupportsGet = true)]
-        public int ClassId { get; set; } = 1;
+        public int ClassId { get; set; }
 
         public string RoleName { get; set; }
 
         // For knowing if I need to show the button to create a new subject and manage Student in FE
         public bool IsAdminOrFormTeacher { get; set; } = false;
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id)
         {
+            ClassId = (int)id;
             // Check role and id user
             string accountIDString = HttpContext.Session.GetString("AccountIDSession");
             RoleName = HttpContext.Session.GetString("RoleSession");
@@ -49,7 +50,6 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
                             .Include(c => c.Subject)
                             .Where(c => c.Class.ClassId == ClassId)
                             .ToListAsync();
-
                         // Check if role of user is not student because student cannot create or manage student in their class
                         if (RoleName.Equals(StaticString.StringRoleTeacher) || RoleName.Equals(StaticString.StringRoleAdmin))
                         {
