@@ -22,7 +22,10 @@ namespace OnlineLearningSystem.Pages.Notifications
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            checkRole();
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             if (id == null || _context.Notifications == null)
             {
                 return NotFound();
@@ -39,9 +42,14 @@ namespace OnlineLearningSystem.Pages.Notifications
             }
             return Page();
         }
-        void checkRole()
+        bool checkRole()
         {
-
+            string role = HttpContext.Session.GetString("RoleSession");
+            if (string.IsNullOrEmpty(role))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

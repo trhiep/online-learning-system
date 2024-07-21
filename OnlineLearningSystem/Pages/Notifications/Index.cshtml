@@ -14,7 +14,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Notification[0].Title)
+                Title
             </th>
             <th>
                 Create Date
@@ -26,17 +26,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Notification)
+        @foreach (var item in Model.notificationOfAccounts)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    @Html.DisplayFor(modelItem => item.Notification.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                    @Html.DisplayFor(modelItem => item.Notification.CreatedDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedByNavigation.Fullname)
+                    @Html.DisplayFor(modelItem => item.Notification.CreatedByNavigation.Fullname)
                 </td>
                 <td>
                     <a asp-page="./Details" asp-route-id="@item.NotificationId">Read</a>

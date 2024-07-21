@@ -25,6 +25,10 @@ namespace OnlineLearningSystem.Pages.Notifications
 
         public IActionResult OnGet()
         {
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             checkRole();
             LoadReciver();
             return Page();
@@ -42,12 +46,17 @@ namespace OnlineLearningSystem.Pages.Notifications
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             if (Notification == null)
             {
                 return Page();
             }
-            checkRole();
-            Notification.CreatedBy = 4;
+            string user = HttpContext.Session.GetString("UserSession");
+            Account account = _context.Accounts.Where(a => a.Username.Equals(user)).FirstOrDefault();
+            Notification.CreatedBy = account.AccountId;
             DateTime date = DateTime.Now;
             Notification.CreatedDate = date;
             _context.Notifications.Add(Notification);
@@ -61,6 +70,7 @@ namespace OnlineLearningSystem.Pages.Notifications
                 if (acc != null)
                 {
                     NotificationOfAccount noti = new NotificationOfAccount();
+                    noti.NotificationId = n.NotificationId;
                     noti.To = id;
                     noti.IsRead = false;
                     _context.NotificationOfAccounts.Add(noti);
@@ -68,6 +78,7 @@ namespace OnlineLearningSystem.Pages.Notifications
                     email.SendEmail(acc.Email, "New notification: " + n.Title, n.Content);
                 }
             }
+            _context.SaveChanges();
             //await _hubContext.Clients.All.SendAsync("NewNotification");
             return RedirectToPage("./Index");
         }
@@ -77,9 +88,14 @@ namespace OnlineLearningSystem.Pages.Notifications
             Classrooms = _context.Classrooms.ToList();
             ClassStudents = _context.ClassStudents.ToList();
         }
-        void checkRole()
+        bool checkRole()
         {
-
+            string role = HttpContext.Session.GetString("RoleSession");
+            if (string.IsNullOrEmpty(role) || !role.Equals("Admin"))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

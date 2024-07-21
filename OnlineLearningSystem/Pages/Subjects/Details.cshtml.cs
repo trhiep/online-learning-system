@@ -23,6 +23,10 @@ namespace OnlineLearningSystem.Pages.Gen
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             if (id == null || _context.Subjects == null)
             {
                 return NotFound();
@@ -43,6 +47,15 @@ namespace OnlineLearningSystem.Pages.Gen
         void GetClassBySubject(int id)
         {
             ClassSubjects = _context.ClassSubjects.Include("Class").Where(c => c.SubjectId == id).ToList();
+        }
+        bool checkRole()
+        {
+            string role = HttpContext.Session.GetString("RoleSession");
+            if (string.IsNullOrEmpty(role) || !role.Equals("Admin"))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -42,6 +42,10 @@ namespace OnlineLearningSystem.Pages.Gen
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -71,6 +75,15 @@ namespace OnlineLearningSystem.Pages.Gen
         private bool SubjectExists(int id)
         {
             return (_context.Subjects?.Any(e => e.SubjectId == id)).GetValueOrDefault();
+        }
+        bool checkRole()
+        {
+            string role = HttpContext.Session.GetString("RoleSession");
+            if (string.IsNullOrEmpty(role) || !role.Equals("Admin"))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -20,6 +20,10 @@ namespace OnlineLearningSystem.Pages.Gen
 
         public IActionResult OnGet()
         {
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             return Page();
         }
 
@@ -30,7 +34,11 @@ namespace OnlineLearningSystem.Pages.Gen
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.Subjects == null || Subject == null)
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
+            if (!ModelState.IsValid || _context.Subjects == null || Subject == null)
             {
                 return Page();
             }
@@ -39,6 +47,15 @@ namespace OnlineLearningSystem.Pages.Gen
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
+        }
+        bool checkRole()
+        {
+            string role = HttpContext.Session.GetString("RoleSession");
+            if (string.IsNullOrEmpty(role) || !role.Equals("Admin"))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
