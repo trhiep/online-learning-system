@@ -45,3 +45,21 @@
     });
 })(jQuery);
 
+
+var connection = new signalR.HubConnectionBuilder().withUrl("/SignalRHub").build();
+
+connection.start().catch(err => alert(err));
+
+connection.on("NewNotification", function () {
+    ShowNewNotification();
+})
+function ShowNewNotification() {
+    let popup = document.getElementById("pop_up_content");
+    fetch("/Notifications/notification?handler=GetNewNotification")
+        .then(res => res.json())
+        .then(data => data.forEach(item => {
+            console.log(item);
+            let text = '<span>${item.Title}</span><br><span><${item.Content}/span>'
+            popup.innerHTML = text;
+        }))
+}

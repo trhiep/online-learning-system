@@ -1,0 +1,53 @@
+﻿@page
+@model OnlineLearningSystem.Pages.Gen.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Subject</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Subject.SubjectName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Subject.SubjectName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Subject?.SubjectId" class="btn btn-outline-success">Edit</a> |
+    <a asp-page="./Index" class="btn btn-outline-success">Back to List</a>
+</div>
+<div id="list-class">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClassSubjects[0].Class.ClassName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClassSubjects[0].SubjectTeacher)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ClassSubjects)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.Class.ClassName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SubjectTeacher)
+                    </td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
