@@ -23,7 +23,6 @@ namespace OnlineLearningSystem.Models
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
         public virtual DbSet<ClassSubjectPost> ClassSubjectPosts { get; set; } = null!;
         public virtual DbSet<ClassSubjectTest> ClassSubjectTests { get; set; } = null!;
-        public virtual DbSet<ClassSubjectTestAttachment> ClassSubjectTestAttachments { get; set; } = null!;
         public virtual DbSet<Classroom> Classrooms { get; set; } = null!;
         public virtual DbSet<ConversationMember> ConversationMembers { get; set; } = null!;
         public virtual DbSet<CoversationMessage> CoversationMessages { get; set; } = null!;
@@ -188,22 +187,6 @@ namespace OnlineLearningSystem.Models
                     .HasForeignKey(d => d.ClassSubjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ClassTest_ClassSubject");
-            });
-
-            modelBuilder.Entity<ClassSubjectTestAttachment>(entity =>
-            {
-                entity.HasKey(e => e.TestAttachmentId)
-                    .HasName("ClassSubjectTestAttachments_pk");
-
-                entity.Property(e => e.TestAttachmentId).HasColumnName("TestAttachmentID");
-
-                entity.Property(e => e.TestId).HasColumnName("TestID");
-
-                entity.HasOne(d => d.Test)
-                    .WithMany(p => p.ClassSubjectTestAttachments)
-                    .HasForeignKey(d => d.TestId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ClassSubjectTestAttachments_ClassSubjectTest");
             });
 
             modelBuilder.Entity<Classroom>(entity =>
@@ -371,7 +354,9 @@ namespace OnlineLearningSystem.Models
 
                 entity.Property(e => e.StudentTestAnswerId).HasColumnName("StudentTestAnswerID");
 
-                entity.Property(e => e.QuestionAnswerId).HasColumnName("QuestionAnswerID");
+                entity.Property(e => e.AnswerTime).HasColumnType("datetime");
+
+                entity.Property(e => e.SelectedAnswerId).HasColumnName("SelectedAnswerID");
 
                 entity.Property(e => e.StudentId).HasColumnName("StudentID");
 
@@ -379,9 +364,9 @@ namespace OnlineLearningSystem.Models
 
                 entity.Property(e => e.TestQuestionId).HasColumnName("TestQuestionID");
 
-                entity.HasOne(d => d.QuestionAnswer)
+                entity.HasOne(d => d.SelectedAnswer)
                     .WithMany(p => p.StudentTestAnswers)
-                    .HasForeignKey(d => d.QuestionAnswerId)
+                    .HasForeignKey(d => d.SelectedAnswerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("StudentTestAnswer_Answer");
 

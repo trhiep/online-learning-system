@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using OnlineLearningSystem.Models;
 
 namespace OnlineLearningSystem.Pages.ClassSubjectTests
@@ -21,6 +22,12 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
 
             if (thisQuestion != null)
             {
+                var answers = await _dbContext.Answers.Where(a => a.QuestionId == id).ToListAsync();
+                foreach (var item in answers)
+                {
+                    _dbContext.Answers.Remove(item);
+                    await _dbContext.SaveChangesAsync();
+                }
                 _dbContext.TestQuestions.Remove(thisQuestion);
                 await _dbContext.SaveChangesAsync();
                 TempData["ToastMessage"] = "Xoá câu hỏi thành công!";

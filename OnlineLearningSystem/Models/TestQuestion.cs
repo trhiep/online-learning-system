@@ -14,7 +14,6 @@ namespace OnlineLearningSystem.Models
         public int TestId { get; set; }
         public int TestQuestionId { get; set; }
         public string Content { get; set; } = null!;
-        public string ImageLink { get; set; } = null!;
         public DateTime LastModifiedDate { get; set; }
 
         public virtual ClassSubjectTest Test { get; set; } = null!;
