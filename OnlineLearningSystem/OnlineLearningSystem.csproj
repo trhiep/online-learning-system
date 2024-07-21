@@ -4,10 +4,18 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Pages\Test\**" />
+    <Content Remove="Pages\Test\**" />
+    <EmbeddedResource Remove="Pages\Test\**" />
+    <None Remove="Pages\Test\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.32">
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.31" />
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
