@@ -92,6 +92,7 @@ namespace OnlineLearningSystem.Pages.Classrooms
                 },
                 selectedClassData = new
                 {
+                    classId = classroom.ClassId,
                     className = classroom.ClassName,
                     createBy = classroom.CreateBy,
                     formTeacherId = classroom.FormTeacherId,
