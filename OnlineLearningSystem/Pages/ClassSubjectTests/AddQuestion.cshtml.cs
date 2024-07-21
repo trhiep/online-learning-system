@@ -1,3 +1,4 @@
+using MessagePack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +76,6 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
 
         public async Task<IActionResult> OnPostAsync()
         {
-            TestQuestion.ImageLink = "";
             TestQuestion.LastModifiedDate = DateTime.Now;
 
             _dbContext.TestQuestions.Add(TestQuestion);
@@ -88,7 +88,6 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                 {
                     QuestionId = TestQuestion.TestQuestionId,
                     Content = item.Content,
-                    ImageLink = "",
                     LastModifiedDate = DateTime.Now,
                     IsCorrectAnswer = item.IsChecked
                 };
@@ -124,7 +123,6 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                             {
                                 QuestionId = thisTestQuestion.TestQuestionId,
                                 Content = item.Content,
-                                ImageLink = "",
                                 LastModifiedDate = DateTime.Now,
                                 IsCorrectAnswer = item.IsChecked
                             };
@@ -174,7 +172,6 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                 {
                     TestId = int.Parse(TestID),
                     Content = item.QuestionText,
-                    ImageLink = "",
                     LastModifiedDate = DateTime.Now
                 };
                 _dbContext.TestQuestions.Add(newQuestion);
@@ -191,7 +188,6 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                     {
                         QuestionId = newQuestion.TestQuestionId,
                         Content = ans.Content,
-                        ImageLink = "",
                         LastModifiedDate = DateTime.Now,
                         IsCorrectAnswer = ans.IsChecked
                     };
@@ -345,6 +341,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
 
     public class AnswerDTO
     {
+        public int QuestionId { get; set; }
         public bool IsChecked { get; set; }
         public string Content { get; set; }
         public string AnswerId { get; set; }
@@ -352,7 +349,9 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
 
     public class Question
     {
+        public int QuestionId { get; set; }
         public string QuestionText { get; set; }
+        public string Description {  get; set; }
         public List<AnswerDTO> Answers { get; set; } = new List<AnswerDTO>();
     }
 }

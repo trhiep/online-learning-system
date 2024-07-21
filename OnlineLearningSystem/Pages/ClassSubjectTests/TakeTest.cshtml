@@ -1,0 +1,302 @@
+﻿@page
+@model OnlineLearningSystem.Pages.ClassSubjectTests.TakeTestModel
+@using OnlineLearningSystem.Models
+@{
+    int count = 1;
+    int countCb = 1;
+
+    ViewData["Title"] = "Làm bài " + @Model.TestInformation.TestName;
+}
+
+<div class="mt-5">
+    <div class="border-start border-5 border-success ps-5 mb-5">
+        <div class="row">
+            <h3 class="text-uppercase mb-0">BẮT ĐẦU LÀM BÀI</h3>
+            <h6 class="text-uppercase mb-0">Bài thi này có @Model.Questions.Count() câu hỏi</h6>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div id="answerField">
+                @foreach (var item in Model.Questions)
+                {
+                    <div class="card mt-3">
+                        <h5 class="card-header">Câu hỏi số @count</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.QuestionText</h5>
+                            <input type="hidden" class="question-id" value="@item.QuestionId" />
+                            <span>@item.Description</span>
+                            @foreach (var ans in item.Answers as IEnumerable<AnswerDTO>)
+                            {
+                                if (ans.QuestionId == item.QuestionId)
+                                {
+                                    <div>
+                                        <input type="checkbox"
+                                               class="answer-checkbox"
+                                               id="answer_@ans.AnswerId"
+                                               name="answers"
+                                               value="@ans.AnswerId" />
+                                        <label for="answer_@ans.AnswerId">@ans.Content</label>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    count++;
+                }
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="sticky-top" style="top: 200px;">
+                <div class="row">
+                    <h6>THÔNG TIN TIẾN ĐỘ LÀM BÀI</h6>
+                </div>
+                <div id="checkboxList">
+                    @foreach (var item in Model.Questions)
+                    {
+                        <input type="checkbox" class="btn-check" id="checkbox_@item.QuestionId" autocomplete="off" disabled>
+                        <label class="btn btn-outline-primary mt-1" style="width: 45px; height: 45px; text-align: center" for="checkbox_@item.QuestionId">@countCb</label>
+                        countCb++;
+                    }
+                </div>
+                <div class="row mt-3">
+                    <div id="countdown">
+                        <div id="progress-container">
+                            <div id="progress-bar"></div>
+                        </div>
+                        <div id="time-display">
+                            <span class="answer-text">CÒN LẠI </span>
+                            <span class="answer-text" id="minutes"></span> PHÚT
+                            <span class="answer-text" id="seconds"></span> GIÂY
+                        </div>
+                    </div>
+                </div>
+                <form method="post" id="confirmationForm">
+                    <input type="hidden" id="AnswersJSON" name="AnswersJSON" />
+                    <input type="hidden" id="AttemptNo" name="AttemptNo" value="@Model.AttemptNo" />
+                    <input type="hidden" id="ThisTestId" name="ThisTestId" value="@Model.TestInformation.TestId" />
+                </form>
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary btn-test-save" style="width: 100%">LƯU BÀI</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-danger btn-test-submit" style="width: 100%">NỘP BÀI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Xác nhận nộp bài</h5>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn nộp bài không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-warning" id="submitButton">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<input type="hidden" id="TestTime" value="@Model.TestInformation.Duration" />
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const form = document.getElementById('confirmationForm');
+            const answerField = document.getElementById('answerField');
+            const checkboxList = document.getElementById('checkboxList');
+            const jsonInput = document.getElementById('AnswersJSON');
+            const submitButton = document.getElementById('submitButton');
+            const submitButtonPre = document.getElementById('submitButtonPre');
+            const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            answerField.addEventListener('change', (event) => {
+                if (event.target.type === 'checkbox') {
+                    const data = {};
+                    const cards = answerField.getElementsByClassName('card');
+                    Array.from(cards).forEach(card => {
+                        const questionId = card.querySelector('input[type="hidden"]').value;
+                        if (!data[questionId]) {
+                            data[questionId] = [];
+                        }
+                        const inputs = card.querySelectorAll('input[type="checkbox"]');
+                        let isChecked = false;
+                        Array.from(inputs).forEach(input => {
+                            data[questionId].push({
+                                AnswerId: input.value,
+                                Checked: input.checked
+                            });
+                            if (input.checked) {
+                                isChecked = true;
+                            }
+                        });
+                        const header = card.querySelector('.card-header');
+                        if (isChecked) {
+                            header.classList.add('header-checked');
+                        } else {
+                            header.classList.remove('header-checked');
+                        }
+                        const correspondingCheckbox = document.querySelector(`#checkboxList #checkbox_${questionId}`);
+                        if (correspondingCheckbox) {
+                            correspondingCheckbox.checked = isChecked;
+                        }
+                    });
+                    jsonInput.value = JSON.stringify(data, null, 2);
+                }
+            });
+
+            submitButton.addEventListener('click', () => {
+                // Cập nhật dữ liệu JSON trước khi gửi form
+                const data = {};
+                const cards = answerField.getElementsByClassName('card');
+                Array.from(cards).forEach(card => {
+                    const questionId = card.querySelector('input[type="hidden"]').value;
+                    if (!data[questionId]) {
+                        data[questionId] = [];
+                    }
+                    const inputs = card.querySelectorAll('input[type="checkbox"]');
+                    Array.from(inputs).forEach(input => {
+                        data[questionId].push({
+                            AnswerId: input.value,
+                            IsChecked: input.checked
+                        });
+                    });
+                });
+
+                jsonInput.value = JSON.stringify(data);
+                modal.hide(); // Đóng modal
+                form.submit(); // Gửi form
+            });
+
+            
+        });
+
+        $(document).ready(function () {
+            $('.btn-test-submit').click(function () {
+                // Show the modal
+                $('#confirmationModal').modal('show');
+            });
+
+            // Handle modal close event
+            $('#confirmationModal .btn-secondary').click(function () {
+                $('#confirmationModal').modal('hide');
+            });
+        });
+
+        $(document).ready(function () {
+            $('.btn-test-save').click(function () {
+                UpdateAnswerJSON();
+
+                const TestId = document.getElementById('ThisTestId').value;
+                console.log(TestId);
+
+                const AnswersData = document.getElementById('AnswersJSON').value;
+                console.log(AnswersData);
+
+                // Ensure AnswersData is a valid JSON string
+                try {
+                    JSON.parse(AnswersData); // This will throw an error if AnswersData is not valid JSON
+                } catch (error) {
+                    console.error('Invalid JSON format in AnswersData:', error);
+                    return; // Exit the function if JSON is invalid
+                }
+
+                let jsonSendObject = {
+                    TestId: TestId,
+                    AnswersData: AnswersData
+                };
+
+                var jsonData = JSON.stringify(jsonSendObject);
+                console.log(jsonData);  
+            });
+        });
+
+    </script>
+
+    <script>
+        // Khai báo thời gian
+        var hiddenInputVal = document.getElementById('TestTime').value;
+        var time = parseInt(hiddenInputVal, 10);
+        // var time = 1;
+
+        // Đặt thời điểm kết thúc (thí dụ: 5 phút từ bây giờ)
+        const endDate = new Date().getTime() + time * 60 * 1000; // 5 phút
+
+        // Cập nhật bộ đếm mỗi giây
+        const interval = setInterval(function () {
+            // Lấy thời gian hiện tại
+            const now = new Date().getTime();
+
+            // Tính toán thời gian còn lại
+            const distance = endDate - now;
+
+            // Tính toán các đơn vị thời gian
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Cập nhật phần tử HTML với thời gian còn lại
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+
+            // Cập nhật thanh progress bar
+            const totalDuration = time * 60 * 1000; // Tổng thời gian (5 phút)
+            const progress = (distance / totalDuration) * 100; // Tính phần trăm còn lại
+            document.getElementById('progress-bar').style.width = progress + '%';
+
+            // Thay đổi màu sắc của thanh progress bar dựa trên phần trăm còn lại
+            let barColor;
+            if (progress <= 25) {
+                barColor = 'red';
+            } else if (progress <= 50) {
+                barColor = 'yellow';
+            } else if (progress <= 75) {
+                barColor = 'orange';
+            } else {
+                barColor = 'green';
+            }
+            document.getElementById('progress-bar').style.backgroundColor = barColor;
+
+            // Nếu thời gian đã hết, gửi bài thi
+            if (distance < 0) {
+                UpdateAnswerJSON();
+                form.submit();
+            }
+        }, 1000);
+
+        function UpdateAnswerJSON() {
+            const form = document.getElementById('confirmationForm');
+            const answerField = document.getElementById('answerField');
+            const jsonInput = document.getElementById('AnswersJSON');
+
+            const data = {};
+            const cards = answerField.getElementsByClassName('card');
+            Array.from(cards).forEach(card => {
+                const questionId = card.querySelector('input[type="hidden"]').value;
+                if (!data[questionId]) {
+                    data[questionId] = [];
+                }
+                const inputs = card.querySelectorAll('input[type="checkbox"]');
+                Array.from(inputs).forEach(input => {
+                    data[questionId].push({
+                        AnswerId: input.value,
+                        IsChecked: input.checked
+                    });
+                });
+            });
+
+            jsonInput.value = JSON.stringify(data);
+        }
+
+    </script>
+}

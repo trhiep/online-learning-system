@@ -30,9 +30,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
         public string TestEndDate { get; set; } = default!;
         public async Task<IActionResult> OnPostAsync()
         {
-            ClassSubjectTest.TestDescription = "Test";
-            ClassSubjectTest.TestImage = "";
-
+            ClassSubjectTest.TestDescription = "";
             ClassSubjectTest.StartDate = DateTimeHelper.GetFormatedDateTimeFromString(TestStartDate);
             ClassSubjectTest.EndDate = DateTimeHelper.GetFormatedDateTimeFromString(TestEndDate);
 
