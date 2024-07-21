@@ -1,4 +1,4 @@
-﻿@inject IHttpContextAccessor HttpContextAccessor
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     bool getSession =string.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("UserSession"));
