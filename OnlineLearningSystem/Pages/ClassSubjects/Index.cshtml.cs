@@ -16,7 +16,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
             _dbContext = dbContext;
 
             LogedInAccount = new Account();
-            LogedInAccount = _dbContext.Accounts.Where(x => x.AccountId == 7).First();
+            LogedInAccount = _dbContext.Accounts.Where(x => x.AccountId == 6).First();
         }
 
         public IList<ClassSubjectTest> InactiveClassSubjectTest { get; set; } = default!;

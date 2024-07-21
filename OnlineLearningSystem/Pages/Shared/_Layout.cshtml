@@ -12,7 +12,7 @@
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Roboto:wght@700&display=swap" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -28,12 +28,13 @@
     <link href="~/css/customized-bootstrap.min.css" rel="stylesheet" />
 
     <!-- Template Stylesheet -->
+    
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <!-- Navbar Start -->
      <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm py-3 py-lg-0 px-3 px-lg-0">
-        <a href="/Home" class="navbar-brand ms-lg-5">
+        <a href="/Index" class="navbar-brand ms-lg-5">
             <h1 class="m-0 text-uppercase text-dark"><i class="bi bi-brightness-alt-high-fill fs-1 text-success me-3"></i>OLS</h1>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -41,10 +42,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0" style="margin-right:50px">
-                <a href="/" class="nav-item nav-link">TRANG CHỦ</a>
+                <a href="/Index" class="nav-item nav-link">TRANG CHỦ</a>
                 @if (string.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("UserSession")))
                 {
-                    <a href="/Login" class="nav-item nav-link">ĐĂNG NHẬP</a>
+                    <a href="/Authen/Login" class="nav-item nav-link">ĐĂNG NHẬP</a>
                 }
                 else
                 {

@@ -41,17 +41,7 @@ namespace OnlineLearningSystem.Pages.Logins
 				HttpContext.Session.SetString("UserSession", loginAccount.Username);
                 HttpContext.Session.SetString("RoleSession", loginAccount.Role);
 
-                switch (loginAccount.Role)
-                {
-                    case "Admin":
-                        return RedirectToPage("/DashBoard/UserManage");
-                    case "Teacher":
-                        return RedirectToPage("/UserProfile/TeacherProfile");
-                    case "Student":
-                        return RedirectToPage("/UserProfile/StudentProfile");
-                    default:
-                        return RedirectToAction("Login");
-                }
+                return RedirectToPage("/Index");
             }
 			else
 			{
