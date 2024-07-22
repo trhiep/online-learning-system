@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NPOI.POIFS.Crypt.Dsig;
 using OnlineLearningSystem.Models;
+using OnlineLearningSystem.Utils;
+using OnlineLearningSystem.Utils.Converter;
 using OnlineLearningSystem.Utils.Extensions;
 using System.Collections.Generic;
 
@@ -108,12 +110,28 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
             return new JsonResult(new { success = true });
         }
 
+        public JsonResult OnPostSaveLog(string message, int testId)
+        {
+            string username = HttpContext.Session.GetString("UserSession");
+            var thisTest = _dbContext.ClassSubjectTests.Where(x => x.TestId == testId).First();
+
+            string buildDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string logDirectory = Path.Combine(buildDirectory, "Logs/" + TextConvert.RemoveDiacritics(thisTest.TestName) + "/" + username);
+            string logFileName = username + ".txt";
+
+            Logger logger = new Logger(logDirectory, logFileName);
+
+            logger.Log(username, message);
+
+            return new JsonResult(new { success = true });
+        }
+
         private void SaveStudentAnswersToDB(string dataJSON, int testId, int attemptNo)
         {
             List<StudentTestAnswer> studentTestAnswers = GetStudentTestAnswerFromJSON(dataJSON, testId);
             if (studentTestAnswers.Any())
             {
-                var oldAnswers = _dbContext.StudentTestAnswers.Where(x => x.TestId == testId && x.AttemptNo == attemptNo).ToList();
+                var oldAnswers = _dbContext.StudentTestAnswers.Where(x => x.TestId == testId && x.AttemptNo == attemptNo && x.StudentId == studentTestAnswers[0].StudentId).ToList();
                 if (oldAnswers.Any())
                 {
                     foreach (var oldAnswer in oldAnswers)

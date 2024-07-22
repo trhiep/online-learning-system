@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using OnlineLearningSystem.Models;
+using OnlineLearningSystem.Utils;
 using OnlineLearningSystem.Utils.Converter;
 
 namespace OnlineLearningSystem.Pages.ClassSubjectTests
@@ -24,6 +25,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
 
         public List<TestResultDTO> TestResults { get; set; } = default!;
         public Dictionary<string, TestResultDTO> TestResultDic { get; set; } = default!;
+        public bool IsAllowToEdit { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync(int? testId)
         {
 
@@ -45,6 +47,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                             {
                                 TestResults = new List<TestResultDTO>();
                                 TestResults = GetTestResults(LogedInAccount.AccountId, ClassSubjectTest.TestId);
+                                if (!TestResults.Any()) IsAllowToEdit = true;
                             } else
                             {
                                 var studentsOfThisClass = _dbContext.ClassStudents
@@ -73,6 +76,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                                         }
                                         
                                     }
+                                    if (!TestResultDic.Any()) IsAllowToEdit = true;
                                 }
                             }
                         }
@@ -204,6 +208,38 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
 
             byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
             return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        public async Task<IActionResult> OnPostExportDoTestHistory()
+        {
+            var thisTest = _dbContext.ClassSubjectTests.Where(x => x.TestId == int.Parse(TestID)).First();
+
+            string username = HttpContext.Session.GetString("UserSession");
+            var thisAccount = _dbContext.Accounts.Where(x => x.Username == username).First();
+
+
+            string sourceFolder = Path.Combine(Directory.GetCurrentDirectory(), "bin/Debug/net6.0/Logs/" + TextConvert.RemoveDiacritics(thisTest.TestName));
+            if (thisAccount.Role == "Student")
+            {
+                sourceFolder = Path.Combine(Directory.GetCurrentDirectory(), "bin/Debug/net6.0/Logs/" + TextConvert.RemoveDiacritics(thisTest.TestName)+"/"+username);
+            }
+            
+            if (!Directory.Exists(sourceFolder))
+            {
+                Directory.CreateDirectory(sourceFolder);
+
+                string sampleFilePath = Path.Combine(sourceFolder, "EMPTY_HISTORY.txt");
+                System.IO.File.WriteAllText(sampleFilePath, "Không có lịch sử.");
+            }
+
+            string zipFilePath = Path.Combine(Path.GetTempPath(), TextConvert.RemoveDiacritics(thisTest.TestName) + "_Lich-su-lam-bai.zip");
+
+            FileHelper.ZipFolder(sourceFolder, zipFilePath);
+
+            var fileBytes = System.IO.File.ReadAllBytes(zipFilePath);
+            var fileName = TextConvert.RemoveDiacritics(thisTest.TestName) + "_Lich-su-lam-bai.zip";
+
+            return File(fileBytes, "application/zip", fileName);
         }
 
         public void ExportGradesToExcel(List<TestResultOfStudentDTO> results, string filePath)
