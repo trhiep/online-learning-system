@@ -18,6 +18,7 @@
     <div class="container">
         <h1>Student Management</h1>
         <div class="form-group">
+
             <label for="classList">Class List</label>
             <select id="classList" class="form-control">
                 <option value="" selected disabled>Select a class</option>
@@ -26,10 +27,15 @@
                     <option value="@item.ClassId">@item.ClassName</option>
                 }
             </select>
+
+
             <div style="margin-top: 10px;">
-                <input type="file" id="fileInput" />
-                <button id="submitFile" class="btn btn-primary">Submit</button>
+                    <form enctype="multipart/form-data" method="post" asp-page-handler="Upload">
+                        <input type="file" id="fileInput" name="UploadedFile" />
+                        <button type="submit" id="submitFile" class="btn btn-primary">Submit</button>
+                    </form>
             </div>
+            
         </div>
         <table class="table table-striped">
             <thead>
@@ -66,7 +72,7 @@
                 const selectedClassId = $(this).val();
                 if (selectedClassId) {
                     $.ajax({
-                        url: '@Url.Page("GenerateStudentAccount")' + '?classId=' + selectedClassId,
+                        url: '/GenerateStudentAccount?handler=Students' + '?classId=' + selectedClassId,
                         type: 'GET',
                         success: function (data) {
                             const tableBody = $('#studentTableBody');

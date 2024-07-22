@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using OnlineLearningSystem.Models;
 using System.Text.Json;
 
@@ -30,7 +32,7 @@ namespace OnlineLearningSystem.Pages.Dashboard
 			ClassList = (from account in _context.Accounts
 						 join classStudent in _context.ClassStudents on account.AccountId equals classStudent.StudentId
 						 join classroom in _context.Classrooms on classStudent.ClassId equals classroom.ClassId
-						 where classStudent.ClassId == 1
+						 
 						 select new ClassViewModel
 						 {
 							 Account = account,
@@ -46,7 +48,7 @@ namespace OnlineLearningSystem.Pages.Dashboard
             var students = (from account in _context.Accounts
                             join classStudent in _context.ClassStudents on account.AccountId equals classStudent.StudentId
                             join classroom in _context.Classrooms on classStudent.ClassId equals classroom.ClassId
-                            where classStudent.ClassId == classId
+                            where classStudent.ClassId == classId 
                             select new
                             {
                                 Account = account,
@@ -56,6 +58,30 @@ namespace OnlineLearningSystem.Pages.Dashboard
                             }).ToList();
             Console.WriteLine("/--- Students: " + JsonSerializer.Serialize(students));
             return new JsonResult(students);
+        }
+
+
+        //-------Upload Excel 
+        [BindProperty]
+        public IFormFile UploadedFile { get; set; }
+
+
+        public IActionResult OnPostUpload(IFormFile file, [FromServices] Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment )
+        {
+            string fileName = $"{hostingEnvironment.WebRootPath}\\account-data\\{file.FileName}";
+            using(FileStream fileStream = System.IO.File.Create(fileName))
+            {
+                file.CopyTo(fileStream);
+                fileStream.Flush();
+            }
+            var student = this.GetStudentList(file.FileName);
+
+            return RedirectToPage();
+        }
+
+        private object GetStudentList(string fileName)
+        {
+            throw new NotImplementedException();
         }
     }
 }
