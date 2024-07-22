@@ -80,7 +80,7 @@ namespace OnlineLearningSystem.Pages.GenerateAccount
         private async Task<List<Account>> ReadExcelAsync(IFormFile excelFile)
         {
             var accountList = new List<Account>();
-           Account account = new Account();
+            
 
             using (var stream = new MemoryStream())
             {
@@ -92,9 +92,11 @@ namespace OnlineLearningSystem.Pages.GenerateAccount
 
                 for (int row = 1; row <= sheet.LastRowNum; row++)
                 {
+                    Account account = new Account();
                     IRow currentRow = sheet.GetRow(row);
                     if (currentRow != null)
                     {
+                        
                         ICell fullNameCell = currentRow.GetCell(0);
                         ICell emailCell = currentRow.GetCell(1);
 
@@ -105,7 +107,9 @@ namespace OnlineLearningSystem.Pages.GenerateAccount
                         account.Role = "Student";
                         account.Status = true;
                         accountList.Add(account);
+                   
                     }
+                    
                 }
             }
 
