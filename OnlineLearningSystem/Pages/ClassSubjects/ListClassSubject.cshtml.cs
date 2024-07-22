@@ -21,36 +21,41 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
 
         public IList<ClassSubject> ClassSubject { get; set; } = default!;
 
-        //fake data for edit and check if form teacher is edit their class, you must get 2 these in onget 
+        //fake data for edit and check if form teacher is editting their class, you must get 2 these in onget 
         [BindProperty(SupportsGet = true)]
-        public int ClassId { get; set; } = 1;
+        public int ClassId { get; set; }
+
         [BindProperty(SupportsGet = true)]
-        public int AccountId { get; set; } = 1;
+        public int AccountId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int FormTeacherId { get; set; }
 
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id, int? formTeacherId)
         {
-            //check role user
-            if (true)
-            {
-                //check if data send to this not null
-                if (_context.ClassSubjects != null && ClassId != null && AccountId != null)
-                {
-                    //check if account access to this page is form teacher of this class
-                    if (IsFormTeacher(AccountId, ClassId))
-                    {
-                        ClassSubject = await _context.ClassSubjects
-                    .Include(c => c.Class)
-                    .Include(c => c.Subject)
-                    .Include(c => c.SubjectTeacherNavigation)
-                    .Where(c => c.Class.ClassId == ClassId)
-                    .ToListAsync();
+            ClassId = (int)id;
+            FormTeacherId = (int)formTeacherId;
+            var username = HttpContext.Session.GetString("UserSession");
+            var Account = _context.Accounts.FirstOrDefault(a => a.Username == username);
 
-                        var classroom = await _context.Classrooms.Where(c => c.ClassId == ClassId).FirstOrDefaultAsync();
-                        ViewData["className"] = classroom.ClassName;
-                    }
-                }
-            }
+
+            ClassSubject = await _context.ClassSubjects
+                .Include(c => c.Class)
+                .Include(c => c.Subject)
+                .Include(c => c.SubjectTeacherNavigation)
+                .Where(c => c.Class.ClassId == ClassId)
+                .ToListAsync();
+
+            //if (IsFormTeacher(AccountId, ClassId))
+            //{
+
+            //}
+
+            var classroom = await _context.Classrooms.Where(c => c.ClassId == ClassId).FirstOrDefaultAsync();
+            var account = await _context.Accounts.Where(a => a.AccountId == FormTeacherId).FirstOrDefaultAsync();
+            ViewData["className"] = classroom.ClassName;
+            ViewData["formTeacherName"] = account.Fullname;
         }
 
         private bool IsFormTeacher(int teacherID, int classID)
