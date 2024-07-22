@@ -1,3 +1,4 @@
+using MathNet.Numerics.Distributions;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -75,6 +76,20 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                             });
 
                             if (ans.IsCorrectAnswer) count++;
+
+                            // here
+                            var newAnswer = new StudentTestAnswer()
+                            {
+                                StudentId = LogedInAccount.AccountId,
+                                TestId = (int)testId,
+                                TestQuestionId = ans.QuestionId,
+                                SelectedAnswerId = ans.QuestionAnswerId,
+                                AnswerTime = DateTime.Now,
+                                AttemptNo = AttemptNo
+                            };
+                            _dbContext.StudentTestAnswers.Add(newAnswer);
+                            await _dbContext.SaveChangesAsync();
+
                         }
                         newQuestion.Description = "Chọn " + count + " đáp án";
 
