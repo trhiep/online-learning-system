@@ -19,13 +19,58 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
 
         public IList<ClassSubject> ClassSubject { get; set; } = default!;
 
+
+        //fake data for edit and check if form teacher is editting their class, you must get 2 these in onget 
+        [BindProperty(SupportsGet = true)]
+        public int ClassId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int AccountId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int FormTeacherId { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public int ClassId { get; set; }
 
         public string RoleName { get; set; }
 
+
         // For knowing if I need to show the button to create a new subject and manage Student in FE
         public bool IsAdminOrFormTeacher { get; set; } = false;
+
+
+        public async Task OnGetAsync(int? id, int? formTeacherId)
+        {
+            ClassId = (int)id;
+            FormTeacherId = (int)formTeacherId;
+            var username = HttpContext.Session.GetString("UserSession");
+            var Account = _context.Accounts.FirstOrDefault(a => a.Username == username);
+
+
+            ClassSubject = await _context.ClassSubjects
+                .Include(c => c.Class)
+                .Include(c => c.Subject)
+                .Include(c => c.SubjectTeacherNavigation)
+                .Where(c => c.Class.ClassId == ClassId)
+                .ToListAsync();
+
+            //if (IsFormTeacher(AccountId, ClassId))
+            //{
+
+            //}
+
+            var classroom = await _context.Classrooms.Where(c => c.ClassId == ClassId).FirstOrDefaultAsync();
+            var account = await _context.Accounts.Where(a => a.AccountId == FormTeacherId).FirstOrDefaultAsync();
+            ViewData["className"] = classroom.ClassName;
+            ViewData["formTeacherName"] = account.Fullname;
+        }
+
+        private bool IsFormTeacher(int teacherID, int classID)
+        {
+            var classRoom = _context.Classrooms.Where(c => c.ClassId == classID && c.FormTeacherId == teacherID);
+            if (classRoom != null) return true;
+            return false;
 
         public async Task OnGetAsync(int? id)
         {
@@ -84,6 +129,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
                 // Example:
                 // return RedirectToPage("/Login");
             }
+
         }
     }
 }

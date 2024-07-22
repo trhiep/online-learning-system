@@ -161,8 +161,8 @@
     <div>
         <a href="#" data-bs-toggle="modal" data-bs-target="#createClassModal" class="btn btn-success" id="openCreateClassModal">Tạo mới lớp học</a>
     </div>
-    <form class="d-flex" id="searchClassForm">
-        <input type="text" id="sreachClassText" name="search" class="me-2" placeholder="Tìm kiếm lớp học" aria-label="Search">
+    <form method="post" class="d-flex" id="searchClassForm" asp-page-handler="SearchClass">
+        <input asp-for="searchClassText" id="sreachClassText" class="me-2" placeholder="Tìm kiếm lớp học" aria-label="Search">
         <button class="btn btn-primary" id="searchClassbtn">Tìm kiếm</button>
     </form>
 </div>
@@ -191,7 +191,11 @@
                     <div class="overlay">
                         <div class="btn-group">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#updateClassModal" data-class-id="@item.ClassId" class="btn btn-outline-warning" id="openUpdateClassModal">Cập nhật</a>
+
+                            <a asp-page="../ClassSubjects/ListClassSubject" asp-route-id="@item.ClassId" asp-route-formTeacherId="@item.FormTeacherId" class="btn btn-outline-info">Chi tiết</a>
+
                             <a asp-page="../ClassSubjects/ListClassSubject" asp-route-id="@item.ClassId" class="btn btn-outline-info">Chi tiết</a>
+
                         </div>
                     </div>
                 </div>
@@ -203,7 +207,7 @@
                             <h6 style="margin-top: 6px">@Html.DisplayFor(modelItem => item.CreateByNavigation.Fullname)</h6>
                         </div>
                     </div>
-                    <hr />
+                    <hr/>
                     <h6 class="card-subtitle mb-1 text-muted">Giáo viên chủ nhiệm:</h6>
                     @if (item.FormTeacherId != null)
                     {
@@ -222,21 +226,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-
-        $('#searchClassbtn').on('click', function () {
-            var formData = $("3searchClassForm").serialize();
-            $.ajax({
-                url: '/Classrooms/List?handler=CreateClassData',
-                method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    $('#formTeacherId').html(data.formTeacherIdOptions || '');
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
 
         $('#openCreateClassModal').on('click', function () {
             $.ajax({
