@@ -170,6 +170,7 @@
 
             submitButton.addEventListener('click', () => {
                 // Cập nhật dữ liệu JSON trước khi gửi form
+                SaveLog("Nộp bài.");
                 const data = {};
                 const cards = answerField.getElementsByClassName('card');
                 Array.from(cards).forEach(card => {
@@ -231,6 +232,7 @@
                         if (response.success) {
                             var successMsg = "Lưu câu trả lời của học sinh thành công!";
                             console.log(successMsg);
+                            SaveLog(successMsg);
                             let toastMessageContent = document.getElementById("topToastMessageContent");
                             // Hiển thị nội dung của toast
                             toastMessageContent.textContent = successMsg;
@@ -250,7 +252,10 @@
 
             $('.btn-test-save').click(function () {
                 SaveAnswer();
+                SaveLog("Lưu bài.");
             });
+
+            
 
             function StartCountdownAndInterval() {
                 var timeC = 1;
@@ -278,6 +283,29 @@
 
         // Hàm đếm ngược và thực hiện công việc
 
+        function SaveLog(message) {
+            const TestId = document.getElementById('ThisTestId').value;
+            console.log(TestId);
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            $.ajax({
+                url: '/ClassSubjectTests/TakeTest?handler=SaveLog',
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                data: { message: message, testId: TestId },
+                success: function (response) {
+                    if (response.success) {
+                        var successMsg = "Lưu log " + message + " thành công!";
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
 
     </script>
 
@@ -326,6 +354,7 @@
 
             // Nếu thời gian đã hết, gửi bài thi
             if (distance < 0) {
+                SaveLog("Hết giờ. Hệ thống tự động nộp bài.");
                 UpdateAnswerJSON();
                 form.submit();
             }
@@ -355,5 +384,49 @@
             jsonInput.value = JSON.stringify(data);
         }
 
+        let userActive = true;
+
+        function userActivityDetected() {
+            userActive = true;
+        }
+
+        window.addEventListener('focus', userActivityDetected);
+        window.addEventListener('blur', () => {
+            userActive = false;
+            console.log('User has left the tab');
+            SaveLog("Rời trang làm bài.");
+        });
+        document.addEventListener('mousemove', () => {
+            userActivityDetected();
+        });
+        document.addEventListener('click', () => {
+            userActivityDetected();
+        });
+        document.addEventListener('keydown', () => {
+            userActivityDetected();
+        });
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') {
+                userActive = false;
+                console.log('User has switched to another tab or minimized the window');
+                SaveLog("Rời trang làm bài.");
+            } else {
+                userActivityDetected();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            // Kiểm tra tổ hợp phím Ctrl + C
+            if (event.ctrlKey && event.key === 'c') {
+                console.log('Ctrl + C was pressed');
+                SaveLog("Thực hiện thao tác copy.");
+            }
+
+            // Kiểm tra tổ hợp phím Ctrl + V
+            if (event.ctrlKey && event.key === 'v') {
+                console.log('Ctrl + V was pressed');
+                SaveLog("Thực hiện thao tác paste.");
+            }
+        });
     </script>
 }
