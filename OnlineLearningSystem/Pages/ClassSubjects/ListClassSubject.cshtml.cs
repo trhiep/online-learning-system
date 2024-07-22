@@ -19,10 +19,19 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
 
         public IList<ClassSubject> ClassSubject { get; set; } = default!;
 
+
+        //fake data for edit and check if form teacher is editting their class, you must get 2 these in onget 
+        [BindProperty(SupportsGet = true)]
+        public int AccountId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int FormTeacherId { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public int ClassId { get; set; }
 
         public string RoleName { get; set; }
+
 
         // For knowing if I need to show the button to create a new subject and manage Student in FE
         public bool IsAdminOrFormTeacher { get; set; } = false;

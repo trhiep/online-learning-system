@@ -22,6 +22,9 @@ namespace OnlineLearningSystem.Pages.Classrooms
         }
 
         [BindProperty]
+        public string searchClassText { get; set; }
+
+        [BindProperty]
         public Classroom NewClassroomData { get; set; } = default!;
 
         [BindProperty]
@@ -162,9 +165,19 @@ namespace OnlineLearningSystem.Pages.Classrooms
             return new JsonResult(new { success = true });
         }
 
-        public async Task<IActionResult> OnPostSearchAsync()
+        public void OnPostSearchClass()
         {
-            return new JsonResult(new { success = true });
+
+            if (string.IsNullOrEmpty(searchClassText))
+            {
+                Classroom = _context.Classrooms.ToList();
+            }
+            else
+            {
+                Classroom = _context.Classrooms
+                    .Where(c => c.ClassName.Contains(searchClassText.Trim()))
+                    .ToList();
+            }
         }
 
 
