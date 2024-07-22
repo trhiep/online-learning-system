@@ -18,20 +18,35 @@ namespace OnlineLearningSystem.Pages.Notifications
             _context = context;
         }
 
-        public IList<Notification> Notification { get;set; } = default!;
+        public IList<Notification> Notification { get; set; } = default!;
+        public IList<NotificationOfAccount> notificationOfAccounts{ get; set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            checkRole();
-            if (_context.Notifications != null)
+            string role = HttpContext.Session.GetString("RoleSession");
+            string user = HttpContext.Session.GetString("UserSession");
+            if (role==null)
             {
-                Notification = await _context.Notifications
-                .Include(n => n.CreatedByNavigation).OrderByDescending(n => n.NotificationId).ToListAsync();
+                return RedirectToPage("../Authen/Login");
             }
-        }
-        void checkRole()
-        {
-
+            Account account = _context.Accounts.Where(a => a.Username.Equals(user)).FirstOrDefault();
+            if (_context.NotificationOfAccounts != null)
+            {
+                if (role.Equals("Admin"))
+                {
+                    int id = account.AccountId;
+                    notificationOfAccounts = await _context.NotificationOfAccounts
+                    .Include(n => n.Notification).Where(n => n.Notification.CreatedBy==id).OrderByDescending(n => n.NotificationId)
+                    .ToListAsync();
+                }
+                else
+                {
+                    notificationOfAccounts = await _context.NotificationOfAccounts
+                    .Include(n => n.Notification).Where(n=>n.To.Equals(account.AccountId)).OrderByDescending(n => n.NotificationId)
+                    .ToListAsync();
+                }
+            }
+            return Page();
         }
     }
 }

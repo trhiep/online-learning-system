@@ -14,53 +14,60 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
         public IndexModel(OLS_DBContext dbContext)
         {
             _dbContext = dbContext;
-
-            LogedInAccount = new Account();
-            LogedInAccount = _dbContext.Accounts.Where(x => x.AccountId == 6).First();
         }
 
         public IList<ClassSubjectTest> InactiveClassSubjectTest { get; set; } = default!;
 
         public IList<ClassSubjectTest> ActiveClassSubjectTest { get; set; } = default!;
+        public ClassSubject ThisClassSubject { get; set; } = default!;
 
         public IActionResult OnGet(int? classSubjectId)
         {
-            if (classSubjectId != null)
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("UserSession")))
             {
-                var classSubjectInformation = _dbContext.ClassSubjects
-                    .Include(x => x.Class)
-                    .Include(x => x.Subject)
-                    .Where(x => x.ClassSubjectId == classSubjectId).First();
+                string username = HttpContext.Session.GetString("UserSession");
+                LogedInAccount = _dbContext.Accounts.Where(x => x.Username == username).First();
 
-                if (classSubjectInformation != null)
+                if (classSubjectId != null)
                 {
-                    if (LogedInAccount != null && LogedInAccount.Role == "Teacher" && classSubjectInformation.SubjectTeacher == LogedInAccount.AccountId)
-                    {
-                        InactiveClassSubjectTest = _dbContext.ClassSubjectTests
-                                .Where(cst => cst.ClassSubjectId == classSubjectId &&
-                                              !_dbContext.TestQuestions
-                                                       .Select(tq => tq.TestId)
-                                                       .Contains(cst.TestId)).ToList();
-                    }
-                    
-                    if (LogedInAccount != null && LogedInAccount.Role == "Student")
-                    {
-                        var thisClassStudent = _dbContext.ClassStudents
-                            .Where(x => x.ClassId == classSubjectInformation.ClassId && x.StudentId == LogedInAccount.AccountId)
-                            .FirstOrDefault();
-                        if (thisClassStudent == null) return RedirectToPage("/Index");
-                    }
+                    ThisClassSubject = _dbContext.ClassSubjects
+                        .Include(x => x.Class)
+                        .Include(x => x.Subject)
+                        .Where(x => x.ClassSubjectId == classSubjectId).First();
 
-                    ActiveClassSubjectTest = _dbContext.ClassSubjectTests
-                        .Where(cst => cst.ClassSubjectId == classSubjectId &&
-                              _dbContext.TestQuestions
-                                       .Select(tq => tq.TestId)
-                                       .Contains(cst.TestId) &&
-                              DateTime.Now >= cst.StartDate && DateTime.Now <= cst.EndDate).ToList();
-                    return Page();
+                    if (ThisClassSubject != null)
+                    {
+                        if (LogedInAccount != null && LogedInAccount.Role == "Teacher" && ThisClassSubject.SubjectTeacher == LogedInAccount.AccountId)
+                        {
+                            InactiveClassSubjectTest = _dbContext.ClassSubjectTests
+                                    .Where(cst => cst.ClassSubjectId == classSubjectId &&
+                                                  !_dbContext.TestQuestions
+                                                           .Select(tq => tq.TestId)
+                                                           .Contains(cst.TestId)).ToList();
+                        }
+
+                        if (LogedInAccount != null && LogedInAccount.Role == "Student")
+                        {
+                            var thisClassStudent = _dbContext.ClassStudents
+                                .Where(x => x.ClassId == ThisClassSubject.ClassId && x.StudentId == LogedInAccount.AccountId)
+                                .FirstOrDefault();
+                            if (thisClassStudent == null) return RedirectToPage("/Index");
+                        }
+
+                        ActiveClassSubjectTest = _dbContext.ClassSubjectTests
+                            .Where(cst => cst.ClassSubjectId == classSubjectId &&
+                                  _dbContext.TestQuestions
+                                           .Select(tq => tq.TestId)
+                                           .Contains(cst.TestId) &&
+                                  DateTime.Now >= cst.StartDate && DateTime.Now <= cst.EndDate).ToList();
+                        return Page();
+                    }
                 }
+                return RedirectToPage("/Index");
+            } else
+            {
+                return RedirectToPage("/Authen/Login");
             }
-            return RedirectToPage("/Index");
         }
     }
 }

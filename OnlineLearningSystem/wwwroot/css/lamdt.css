@@ -1,0 +1,95 @@
+﻿body {
+}
+
+.card-img-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.card-img-container:hover .overlay {
+    opacity: 1;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem; /* Tùy chỉnh kích thước chữ */
+}
+
+.status-icon {
+    width: 12px; /* Kích thước biểu tượng */
+    height: 12px;
+    border-radius: 50%; /* Tạo hình tròn */
+    margin-right: 8px; /* Khoảng cách giữa biểu tượng và văn bản */
+    animation: blink 1s infinite; /* Áp dụng hiệu ứng nhấp nháy */
+}
+
+.active {
+    color: green; /* Màu chữ cho trạng thái Active */
+}
+
+    .active .status-icon {
+        background-color: green; /* Màu biểu tượng cho trạng thái Active */
+    }
+
+.inactive {
+    color: red; /* Màu chữ cho trạng thái Inactive */
+}
+
+    .inactive .status-icon {
+        background-color: red; /* Màu biểu tượng cho trạng thái Inactive */
+    }
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+#sreachClassText {
+    width: 350px;
+    height: 45px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 25px;
+}
+
+    #sreachClassText:focus {
+        background-color: #fff;
+        border-color: #66afe9;
+        outline: none;
+        box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+    }
+
+    #sreachClassText:hover {
+        background-color: #e6f7ff;
+    }

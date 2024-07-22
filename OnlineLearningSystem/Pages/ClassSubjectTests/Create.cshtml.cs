@@ -17,10 +17,21 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
         [BindProperty]
         public ClassSubjectTest ClassSubjectTest { get; set; } = default!;
 
-        public void OnGet()
+        [BindProperty]
+        public int ClassSubjectId { get; set; } = default!;
+
+        public IActionResult OnGet(int? classSubjectId)
         {
-            ClassSubjectTest = new ClassSubjectTest();
-            ClassSubjectTest.ClassSubjectId = 1;
+            if (classSubjectId != null)
+            {
+                ClassSubjectTest = new ClassSubjectTest();
+                ClassSubjectTest.ClassSubjectId = (int)classSubjectId;
+                return Page();
+            } else
+            {
+                return RedirectToPage("/Index");
+            }
+            
         }
 
         [BindProperty]
@@ -37,7 +48,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
             _context.ClassSubjectTests.Add(ClassSubjectTest);
             _context.SaveChanges();
 
-            return RedirectToPage("/ClassSubjects/Index");
+            return RedirectToPage("/ClassSubjectTests/Index", new { classSubjectId = ClassSubjectTest.ClassSubjectId });
         }
     }
 }

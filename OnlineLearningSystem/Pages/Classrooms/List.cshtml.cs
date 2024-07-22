@@ -22,6 +22,9 @@ namespace OnlineLearningSystem.Pages.Classrooms
         }
 
         [BindProperty]
+        public string searchClassText { get; set; }
+
+        [BindProperty]
         public Classroom NewClassroomData { get; set; } = default!;
 
         [BindProperty]
@@ -41,8 +44,6 @@ namespace OnlineLearningSystem.Pages.Classrooms
 
         public IActionResult OnGetCreateClassData()
         {
-            //Khi merge code cần lấy người tạo classroom từ session (bỏ thẻ select)
-            var createByOptions = new SelectList(_context.Accounts.Where(a => a.Role == "Admin"), "AccountId", "Fullname");
 
             var formTeacherList = _context.Accounts.Where(a => a.Role == "Teacher" && !_context.Classrooms.Any(c => c.FormTeacherId == a.AccountId)).ToList();
 
@@ -53,7 +54,6 @@ namespace OnlineLearningSystem.Pages.Classrooms
             }
             var data = new
             {
-                createByOptions = createByOptions.Select(x => $"<option value='{x.Value}'>{x.Text}</option>").ToList(),
                 formTeacherIdOptions = formTeacherIdOptions
             };
 
@@ -72,7 +72,6 @@ namespace OnlineLearningSystem.Pages.Classrooms
             {
                 return NotFound();
             }
-            var createByOptions = new SelectList(_context.Accounts.Where(a => a.Role == "Admin"), "AccountId", "Fullname");
             var formTeacherList = _context.Accounts.Where(a => a.Role == "Teacher" && !_context.Classrooms.Any(c => c.FormTeacherId == a.AccountId)).ToList();
 
             List<string> formTeacherIdOptions = new List<string> { "<option value='0'>Chọn 1 giáo viên</option>" };
@@ -80,21 +79,20 @@ namespace OnlineLearningSystem.Pages.Classrooms
             {
                 formTeacherIdOptions.AddRange(formTeacherList.Select(a => $"<option value='{a.AccountId}'>{a.Fullname}</option>").ToList());
             }
-            formTeacherIdOptions.Add($"<option value='{classroom.FormTeacherId}'>{classroom.FormTeacher?.Fullname}</option>");
+            if (classroom.FormTeacherId != null)
+            {
+                formTeacherIdOptions.Add($"<option value='{classroom.FormTeacherId}'>{classroom.FormTeacher?.Fullname}</option>");
+            }
             var response = new
             {
                 classData = new
                 {
-
-                    createByOptions = createByOptions.Select(x => $"<option value='{x.Value}'>{x.Text}</option>").ToList(),
                     formTeacherIdOptions = formTeacherIdOptions
-
                 },
                 selectedClassData = new
                 {
                     classId = classroom.ClassId,
                     className = classroom.ClassName,
-                    createBy = classroom.CreateBy,
                     formTeacherId = classroom.FormTeacherId,
                     isActive = classroom.IsActive,
 
@@ -119,7 +117,10 @@ namespace OnlineLearningSystem.Pages.Classrooms
                 var errors = "Invalid data";
                 return new JsonResult(new { success = false, message = errors });
             }
-
+            var username = HttpContext.Session.GetString("UserSession");
+            var CreatedBy = _context.Accounts.FirstOrDefault(a => a.Username == username);
+            Console.WriteLine(username);
+            NewClassroomData.CreateBy = CreatedBy.AccountId;
             NewClassroomData.FormTeacherId = NewClassroomData.FormTeacherId == 0 ? (int?)null : NewClassroomData.FormTeacherId;
             _context.Classrooms.Add(NewClassroomData);
             await _context.SaveChangesAsync();
@@ -129,12 +130,6 @@ namespace OnlineLearningSystem.Pages.Classrooms
 
         public async Task<IActionResult> OnPostUpdateAsync()
         {
-            Console.WriteLine(SelectedClassroomData.ClassId);
-            Console.WriteLine(SelectedClassroomData.ClassName);
-            Console.WriteLine(SelectedClassroomData.CreateBy);
-            Console.WriteLine(SelectedClassroomData.FormTeacherId);
-            Console.WriteLine(SelectedClassroomData.IsActive);
-
             if (string.IsNullOrEmpty(SelectedClassroomData.ClassName))
             {
                 var errors = "The ClassName field is required";
@@ -148,8 +143,9 @@ namespace OnlineLearningSystem.Pages.Classrooms
 
             SelectedClassroomData.FormTeacherId = SelectedClassroomData.FormTeacherId == 0 ? (int?)null : SelectedClassroomData.FormTeacherId;
 
-            _context.Attach(SelectedClassroomData).State = EntityState.Modified;
-
+            _context.Entry(SelectedClassroomData).Property(c => c.ClassName).IsModified = true;
+            _context.Entry(SelectedClassroomData).Property(c => c.FormTeacherId).IsModified = true;
+            _context.Entry(SelectedClassroomData).Property(c => c.IsActive).IsModified = true;
             try
             {
                 await _context.SaveChangesAsync();
@@ -168,6 +164,23 @@ namespace OnlineLearningSystem.Pages.Classrooms
 
             return new JsonResult(new { success = true });
         }
+
+        public void OnPostSearchClass()
+        {
+
+            if (string.IsNullOrEmpty(searchClassText))
+            {
+                Classroom = _context.Classrooms.ToList();
+            }
+            else
+            {
+                Classroom = _context.Classrooms
+                    .Where(c => c.ClassName.Contains(searchClassText.Trim()))
+                    .ToList();
+            }
+        }
+
+
 
         private bool ClassroomExists(int id)
         {

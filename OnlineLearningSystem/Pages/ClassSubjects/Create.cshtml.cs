@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,17 +20,24 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
             _context = context;
         }
 
-        public IActionResult OnGet()
-        {
-            ViewData["ClassId"] = new SelectList(_context.Classrooms, "ClassId", "ClassName");
-            ViewData["SubjectList"] = _context.Subjects.ToList();
-            ViewData["TeacherList"] = _context.Accounts.Where(a => a.Role.Equals(StaticString.StringRoleTeacher)).ToList();
-
-            return Page();
-        }
-
         [BindProperty]
         public ClassSubject ClassSubject { get; set; } = default!;
+        public int ClassID { get; set; }
+        public Classroom Class { get; set; }
+
+        public IActionResult OnGet(int? id)
+        {
+            ClassID = (int)id;
+            // Check role and id user
+            string accountIDString = HttpContext.Session.GetString("AccountIDSession");
+            string role = HttpContext.Session.GetString("RoleSession");
+            
+            if (int.TryParse(accountIDString, out int accountID))
+            {               
+                PopulateViewData(accountID);
+            }
+            return Page();
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -37,24 +45,34 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
             {
                 _context.ClassSubjects.Add(ClassSubject);
                 await _context.SaveChangesAsync();
-                return RedirectToPage("./ListClassSubject");
+                return RedirectToPage("./ListClassSubject",new { id = ClassID});
             }
             else
             {
+                //show error
                 var className = _context.Classrooms.FirstOrDefault(c => c.ClassId == ClassSubject.ClassId)?.ClassName;
                 ViewData["Error"] = StaticString.THIS_SUBJECT_EXIST + " in " + className;
-                PopulateViewData();
+
+                // Check role and id user=============================================
+                string accountIDString = HttpContext.Session.GetString("AccountIDSession");
+                string role = HttpContext.Session.GetString("RoleSession");
+
+                if (int.TryParse(accountIDString, out int accountID))
+                {
+                    PopulateViewData(accountID);
+                }
                 return Page();
+                //==================================================================
             }
         }
 
-        private void PopulateViewData()
+        private void PopulateViewData(int accountID)
         {
-            ViewData["ClassId"] = new SelectList(_context.Classrooms, "ClassId", "ClassName");
+            Class = _context.Classrooms.Where(x => x.FormTeacherId == accountID).FirstOrDefault();
             ViewData["SubjectList"] = _context.Subjects.ToList();
             ViewData["TeacherList"] = _context.Accounts.Where(a => a.Role.Equals(StaticString.StringRoleTeacher)).ToList();
         }
-
+        //method check input duplicate
         public bool IsSubjectAlreadyInClass(int classId, int subjectId)
         {
             return _context.ClassSubjects.Any(cs => cs.ClassId == classId && cs.SubjectId == subjectId);

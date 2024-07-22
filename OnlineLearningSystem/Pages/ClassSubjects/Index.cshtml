@@ -12,7 +12,7 @@
                     <div class="card mb-3">
                         <img class="card-img-top class-banner" style="max-height: 350px" src="~/img/classroom.jpg" />
                         <div class="card-body">
-                            <h5 class="card-title">TÊN MÔN HỌC CỦA LỚP Ở ĐÂY</h5>
+                            <h5 class="card-title">@Model.ThisClassSubject.Subject.SubjectName @Model.ThisClassSubject.Class.ClassName</h5>
                         </div>
                     </div>
                 </div>
@@ -22,7 +22,7 @@
             {
                 <div class="row gy-3">
                     <div class="col-md-12">
-                        <a href="ClassSubjectTests/Create" class="btn btn-outline-success float-end">TẠO BÀI THI</a>
+                        <a href="/ClassSubjectTests/Index?classSubjectId=@Model.ThisClassSubject.ClassSubjectId" class="btn btn-outline-success float-end">QUẢN LÝ BÀI THI</a>
                         <a href="#" class="btn btn-outline-primary float-end" style="margin-right: 10px">TẠO BÀI GIẢNG</a>
                     </div>
                 </div>
@@ -42,8 +42,15 @@
             </div>
 
             <div>
-                <div class="border-start border-5 border-success ps-5 mb-5" style="max-width: 600px;">
-                    <h5 class="text-uppercase mb-0">CÁC BÀI THI HIỆN CÓ</h5>
+                <div class="border-start border-5 border-success ps-5 mb-5">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h5 class="text-uppercase mb-0">CÁC BÀI THI HIỆN CÓ</h5>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="/ClassSubjectTests/Index?classSubjectId=@Model.ThisClassSubject.ClassSubjectId" class="btn btn-outline-success float-end">XEM TẤT CẢ</a>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="owl-carousel owl-theme">
@@ -67,7 +74,6 @@
                                     </ul>
                                     <div class="card-body text-center">
                                         <a href="/ClassSubjectTests/TestDetails?testId=@item.TestId" class="btn btn-outline-primary">XEM CHI TIẾT</a>
-                                        <button class="btn btn-outline-warning">VÀO THI</button>
                                     </div>
                                 </div>
                             </div>

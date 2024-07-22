@@ -49,5 +49,6 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
 
             return Page();
         }
+                 
     }
 }

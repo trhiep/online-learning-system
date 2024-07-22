@@ -1,0 +1,161 @@
+﻿@page
+@model OnlineLearningSystem.Pages.ClassSubjectTests.IndexModel
+@{
+    int CurrentTestsCount = 1;
+    int UnavailableTestsCount = 1;
+    int NotStartedTestsCount = 1;
+    int UncompletedTestsCount = 1;
+    int CompletedTestsCount = 1;
+}
+
+<div class="mt-5">
+    <a href="/ClassSubjects/Index?classSubjectId=@Model.ThisClassSubject.ClassSubjectId" class="btn btn-secondary">Trở về</a>
+</div>
+
+<div class="mt-5">
+    <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+        <div class="row">
+            <div class="col-md-9">
+                <h1>DANH SÁCH BÀI THI CỦA MÔN @Model.ThisClassSubject.Subject.SubjectName.ToUpper() LỚP @Model.ThisClassSubject.Class.ClassName</h1>
+            </div>
+            <div clas="col-md-3">
+                @if (Model.LogedInAccount.Role == "Teacher")
+                {
+                    <a href="/ClassSubjectTests/Create?classSubjectId=@Model.ThisClassSubject.ClassSubjectId" class="btn btn-outline-success">TẠO BÀI THI MỚI</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+        <h4 style="color: deepskyblue">ĐANG DIỄN RA</h4>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">TÊN BÀI THI</th>
+                <th scope="col">THỜI GIAN LÀM BÀI</th>
+                <th scope="col">HÀNH ĐỘNG</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CurrentClassSubjectTest)
+            {
+                <tr>
+                    <th scope="row">@UnavailableTestsCount</th>
+                    <td>@item.TestName</td>
+                    <td>@item.Duration phút</td>
+                    <td>
+                        <a style="width: 100%" href="/ClassSubjectTests/TestDetails?testId=@item.TestId" class="btn btn-outline-primary">Xem chi tiết</a>
+                    </td>
+                </tr>
+                UnavailableTestsCount++;
+            }
+        </tbody>
+    </table>
+
+    
+</div>
+
+@if (Model.LogedInAccount.Role == "Teacher")
+{
+    <div class="mt-3">
+        <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+            <h4 style="color: coral">CHƯA HOÀN THIỆN</h4>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">TÊN BÀI THI</th>
+                <th scope="col">THỜI GIAN LÀM BÀI</th>
+                <th scope="col">HÀNH ĐỘNG</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.UnavailableClassSubjectTest)
+            {
+                <tr>
+                    <th scope="row">@CurrentTestsCount</th>
+                    <td>@item.TestName</td>
+                    <td>@item.Duration phút</td>
+                    <td>
+                        <a style="width: 100%" href="/ClassSubjectTests/TestDetails?testId=@item.TestId" class="btn btn-outline-primary">Xem chi tiết</a>
+                    </td>
+                </tr>
+                CurrentTestsCount++;
+            }
+        </tbody>
+    </table>
+}
+
+@if (Model.LogedInAccount.Role == "Teacher")
+{
+    <div class="mt-3">
+        <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+            <h4 style="color: orangered">CHƯA BẮT ĐẦU</h4>
+        </div>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">TÊN BÀI THI</th>
+                <th scope="col">THỜI GIAN THI</th>
+                <th scope="col">THỜI GIAN LÀM BÀI</th>
+                <th scope="col">HÀNH ĐỘNG</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.NotStartedClassSubjectTest)
+            {
+                <tr>
+                    <th scope="row">@NotStartedTestsCount</th>
+                    <td>@item.TestName</td>
+                    <td>@item.StartDate.ToString("dd/MM/yyyy HH:mm") <i class="bi bi-arrow-right"></i> @item.EndDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.Duration phút</td>
+                    <td>
+                        <a style="width: 100%" href="/ClassSubjectTests/TestDetails?testId=@item.TestId" class="btn btn-outline-primary">Xem chi tiết</a>
+                    </td>
+                </tr>
+                NotStartedTestsCount++;
+            }
+        </tbody>
+    </table>
+}
+
+<div class="mt-3">
+    <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+        <h4 style="color: forestgreen">ĐÃ KẾT THÚC</h4>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">TÊN BÀI THI</th>
+                <th scope="col">THỜI GIAN LÀM BÀI</th>
+                <th scope="col">HÀNH ĐỘNG</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CompletedClassSubjectTest)
+            {
+                <tr>
+                    <th scope="row">@CompletedTestsCount</th>
+                    <td>@item.TestName</td>
+                    <td>@item.Duration phút</td>
+                    <td>
+                        <a style="width: 100%" href="/ClassSubjectTests/TestDetails?testId=@item.TestId" class="btn btn-outline-primary">Xem chi tiết</a>
+                    </td>
+                </tr>
+                CompletedTestsCount++;
+            }
+        </tbody>
+    </table>
+</div>

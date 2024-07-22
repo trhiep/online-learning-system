@@ -1,52 +1,66 @@
-﻿@page
+@page
 @model OnlineLearningSystem.Pages.ClassSubjects.ListClassSubjectModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Pages/Shared/_Layout.cshtml";
+    
     var count = 1;
 }
 
-<h1> SUBJECT @ViewData["className"] </h1>
+<style>
+    .btn-group > .btn {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+</style>
+<div class="d-flex mt-4" style="height: 40px">
+    <a asp-page="../Classrooms/List" class="btn btn-dark me-2"><i class="bi bi-arrow-left me-2"></i>Trở lại</a>
+</div>
+<div class="d-flex flex-column align-items-center">
+    <h1> Danh sách môn học lớp <span class="text-success">@ViewData["className"]</span></h1>
+    <div class="d-flex align-items-center">
+        <h5 class="text-muted mb-0">Giáo viên chủ nhiệm:</h5>
+        <h4 class="mb-0 ms-2 text-danger">@ViewData["formTeacherName"]</h4>
+    </div>
+</div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                STT
-            </th>
-            <th>
-                 MÔN
-            </th>
-            <th>
-                GIÁO VIÊN
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ClassSubject)
-        {
-            <tr>
-                <td>
-                    @(count )
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Subject.SubjectName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubjectTeacherNavigation.Fullname)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.ClassSubjectId">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ClassSubjectId">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.ClassSubjectId">Delete</a>
-                </td>
-            </tr>
-            count++;
-        }
-    </tbody>
-</table>
+<div class="d-flex justify-content-between mt-4 mb-3">
+    <a asp-page="Create" class="btn btn-success"><i class="fa fa-plus me-2"></i>Tạo mới môn học</a>
+    <a asp-page="../ClassStudents/StudentList" id="listStudentClass" asp-route-classId="@Model.ClassId" class="btn btn-success"><i class="fa fa-list me-2"></i>Danh sách học sinh</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    @foreach (var item in Model.ClassSubject)
+    {
+        <div class="col">
+            <div class="card mb-3" style="max-width: 100%;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="/subject-background.jpg" class="img-fluid h-100 rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body h-100">
+                            <div class="d-flex flex-row justify-content-between align-items-center">
+                                <h3 class="card-title">@item.Subject.SubjectName</h3>
+                                <div>
+                                    <h6 class="card-subtitle mb-1 text-muted">Giáo viên bộ môn:</h6>
+                                    <h5 class="card-text mt-2" style="max-width: 160px">@item.SubjectTeacherNavigation.Fullname</h5>
+                                </div>
+                            </div>
+                            <div class="btn-group mt-4 w-100">
+                                <a asp-page="../Edit" class="btn btn-outline-info">Chỉnh sửa</a>
+                                <a asp-page="../Delete" class="btn btn-outline-danger">Xoá bỏ</a>
+                                <a asp-page="/ClassSubjects/Index" asp-route-id="@item.ClassSubjectId" asp-route-classId="@item.ClassId" class="btn btn-outline-warning">Chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
