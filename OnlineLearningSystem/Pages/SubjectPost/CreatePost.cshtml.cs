@@ -28,14 +28,13 @@ namespace OnlineLearningSystem.Pages.SubjectPost
         public ClassSubjectPost Post { get; set; } = default!;
 
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid || _context.ClassSubjectPosts == null || Post == null)
             {
                 return Page();
             }
-            
+
             Post.PostedDate = DateTime.Now;
 
             _context.ClassSubjectPosts.Add(Post);
@@ -43,5 +42,6 @@ namespace OnlineLearningSystem.Pages.SubjectPost
 
             return RedirectToPage("./Index");
         }
+
     }
 }

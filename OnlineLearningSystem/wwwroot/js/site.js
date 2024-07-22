@@ -90,29 +90,29 @@ function ShowNewNotification() {
             popup.innerHTML = text;
         }))
 }
-// Disable Developer Mode
-//document.onkeydown = function (e) {
-//    if (e.keyCode == 123) {
-//        return false; // F12
-//    }
-//    if (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'U'.charCodeAt(0))) {
-//        return false; // Ctrl+Shift+I, Ctrl+Shift+C, Ctrl+Shift+J, Ctrl+U
-//    }
-//};
+ //Disable Developer Mode
+document.onkeydown = function (e) {
+    if (e.keyCode == 123) {
+        return false; // F12
+    }
+    if (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'U'.charCodeAt(0))) {
+        return false; // Ctrl+Shift+I, Ctrl+Shift+C, Ctrl+Shift+J, Ctrl+U
+    }
+};
 
-// Check Developer Mode
-//(function () {
-//    var element = new Image();
-//    var devtoolsOpen = false;
-//    element.__defineGetter__('id', function () {
-//        devtoolsOpen = true;
-//        console.log("Developer tools are open");
-//    });
-//    setInterval(function () {
-//        devtoolsOpen = false;
-//        console.log(element);
-//        if (devtoolsOpen) {
-//            alert('Please do not open developer tools!');
-//        }
-//    }, 1000);
-//})();
+ //Check Developer Mode
+(function () {
+    var element = new Image();
+    var devtoolsOpen = false;
+    element.__defineGetter__('id', function () {
+        devtoolsOpen = true;
+        console.log("Developer tools are open");
+    });
+    setInterval(function () {
+        devtoolsOpen = false;
+        console.log(element);
+        if (devtoolsOpen) {
+            alert('Please do not open developer tools!');
+        }
+    }, 1000);
+})();
