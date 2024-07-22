@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using OnlineLearningSystem.Models;
+using OnlineLearningSystem.Pages.ClassSubjectTests;
 
 namespace OnlineLearningSystem.Pages.GenerateAccount
 {
@@ -39,6 +43,90 @@ namespace OnlineLearningSystem.Pages.GenerateAccount
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
+        }
+
+
+
+
+        //-----------------
+        [BindProperty]
+        public IFormFile ExcelFile { get; set; } = default!;
+        [BindProperty]
+        public string TestID { get; set; } = default!;
+        public async Task<IActionResult> OnPostImportAccount()
+        {
+            if (ExcelFile == null || ExcelFile.Length == 0)
+            {
+                TempData["ToastMessage"] = "File Excel không được để trống!";
+                return RedirectToPage("/GenerateAccount/Create");
+            }
+
+            // Read file excel here
+            var accounts = await ReadExcelAsync(ExcelFile);
+            foreach (var item in accounts)
+            {
+              
+                _context.Accounts.Add(item);
+                await _context.SaveChangesAsync();
+
+
+               
+                
+            }
+            TempData["ToastMessage"] = "Nhập câu hỏi từ file Excel thành công!";
+            return RedirectToPage("/GenerateAccount/Index");
+        }
+
+        private async Task<List<Account>> ReadExcelAsync(IFormFile excelFile)
+        {
+            var accountList = new List<Account>();
+           Account account = new Account();
+
+            using (var stream = new MemoryStream())
+            {
+                await excelFile.CopyToAsync(stream);
+                stream.Position = 0;
+
+                IWorkbook workbook = new XSSFWorkbook(stream);
+                ISheet sheet = workbook.GetSheetAt(0);
+
+                for (int row = 1; row <= sheet.LastRowNum; row++)
+                {
+                    IRow currentRow = sheet.GetRow(row);
+                    if (currentRow != null)
+                    {
+                        ICell fullNameCell = currentRow.GetCell(0);
+                        ICell emailCell = currentRow.GetCell(1);
+
+                        account.Fullname = fullNameCell.ToString();
+                        account.Username = "test";
+                        account.Email = emailCell.ToString();
+                        account.Password = "abcd1234";
+                        account.Role = "Student";
+                        account.Status = true;
+                        accountList.Add(account);
+                    }
+                }
+            }
+
+            return accountList;
+        }
+
+        private string GetCellValueAsString(ICell cell)
+        {
+            switch (cell.CellType)
+            {
+                case CellType.String:
+                    return cell.StringCellValue;
+                case CellType.Numeric:
+                    return cell.NumericCellValue.ToString();
+                case CellType.Boolean:
+                    return cell.BooleanCellValue.ToString();
+                case CellType.Formula:
+                    return cell.CellFormula;
+                default:
+                    return string.Empty;
+            }
         }
     }
 }
