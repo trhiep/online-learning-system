@@ -77,17 +77,20 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
 
                             if (ans.IsCorrectAnswer) count++;
 
-                            // here
-                            var newAnswer = new StudentTestAnswer()
+                            if (LogedInAccount.Role == "Student")
                             {
-                                StudentId = LogedInAccount.AccountId,
-                                TestId = (int)testId,
-                                TestQuestionId = ans.QuestionId,
-                                SelectedAnswerId = ans.QuestionAnswerId,
-                                AnswerTime = DateTime.Now,
-                                AttemptNo = AttemptNo
-                            };
-                            _dbContext.StudentTestAnswers.Add(newAnswer);
+                                // here
+                                var newAnswer = new StudentTestAnswer()
+                                {
+                                    StudentId = LogedInAccount.AccountId,
+                                    TestId = (int)testId,
+                                    TestQuestionId = ans.QuestionId,
+                                    SelectedAnswerId = ans.QuestionAnswerId,
+                                    AnswerTime = DateTime.Now,
+                                    AttemptNo = AttemptNo
+                                };
+                                _dbContext.StudentTestAnswers.Add(newAnswer);
+                            }
                             await _dbContext.SaveChangesAsync();
 
                         }
