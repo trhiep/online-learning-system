@@ -92,22 +92,34 @@
 </div>
 
 <!-- Bootstrap Modal -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Xác nhận nộp bài</h5>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn nộp bài không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-warning" id="submitButton">Xác nhận</button>
-                </div>
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Xác nhận nộp bài</h5>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn nộp bài không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-warning" id="submitButton">Xác nhận</button>
             </div>
         </div>
     </div>
+</div>
+
+<div class="toast-container position-fixed top-10 start-50 translate-middle-x p-3" style="z-index: 11; bottom: 65%">
+    <!-- Toast -->
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="myTopToast">
+        <div class="toast-header" style="background-color: #198754">
+            <strong class="mr-auto" style="color: white">THÔNG BÁO</strong>
+        </div>
+        <div class="toast-body">
+            <span id="topToastMessageContent" style="font-size: 16px"></span>
+        </div>
+    </div>
+</div>
 
 <input type="hidden" id="TestTime" value="@Model.TestInformation.Duration" />
 
@@ -179,7 +191,7 @@
                 form.submit(); // Gửi form
             });
 
-            
+
         });
 
         $(document).ready(function () {
@@ -195,7 +207,7 @@
         });
 
         $(document).ready(function () {
-            $('.btn-test-save').click(function () {
+            function SaveAnswer() {
                 UpdateAnswerJSON();
 
                 const TestId = document.getElementById('ThisTestId').value;
@@ -204,23 +216,68 @@
                 const AnswersData = document.getElementById('AnswersJSON').value;
                 console.log(AnswersData);
 
-                // Ensure AnswersData is a valid JSON string
-                try {
-                    JSON.parse(AnswersData); // This will throw an error if AnswersData is not valid JSON
-                } catch (error) {
-                    console.error('Invalid JSON format in AnswersData:', error);
-                    return; // Exit the function if JSON is invalid
+                const AttemptNo = document.getElementById('AttemptNo').value;
+                console.log(AttemptNo);
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: '/ClassSubjectTests/TakeTest?handler=SaveData',
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    data: { jsonData: AnswersData, testId: TestId, attemptNo: AttemptNo },
+                    success: function (response) {
+                        if (response.success) {
+                            var successMsg = "Lưu câu trả lời của học sinh thành công!";
+                            console.log(successMsg);
+                            let toastMessageContent = document.getElementById("topToastMessageContent");
+                            // Hiển thị nội dung của toast
+                            toastMessageContent.textContent = successMsg;
+
+                            // Hiển thị toast
+                            const toast = new bootstrap.Toast(document.getElementById('myTopToast'));
+                            toast.show();
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            };
+
+            $('.btn-test-save').click(function () {
+                SaveAnswer();
+            });
+
+            function StartCountdownAndInterval() {
+                var timeC = 1;
+                let countdown = timeC * 60; // Đếm ngược 120 giây (2 phút)
+                const interval = 1000; // 1 giây (1000 milliseconds)
+
+                function updateCountdown() {
+                    if (countdown > 0) {
+                        countdown--;
+                    } else {
+                        // Khi hết thời gian đếm ngược, thực hiện hàm
+                        SaveAnswer();
+                        // Thiết lập `setInterval` để gọi `SaveAnswer` mỗi 2 phút (120000 milliseconds)
+                        setInterval(SaveAnswer, timeC * 60000); // Truyền tham chiếu hàm mà không gọi ngay
+                        // Hủy bỏ bộ đếm ngược sau khi chuyển sang `setInterval`
+                        clearInterval(countdownInterval);
+                    }
                 }
 
-                let jsonSendObject = {
-                    TestId: TestId,
-                    AnswersData: AnswersData
-                };
-
-                var jsonData = JSON.stringify(jsonSendObject);
-                console.log(jsonData);  
-            });
+                // Thực hiện cập nhật đếm ngược mỗi giây
+                const countdownInterval = setInterval(updateCountdown, interval);
+            }
+            StartCountdownAndInterval();
         });
+
+        // Hàm đếm ngược và thực hiện công việc
+
 
     </script>
 

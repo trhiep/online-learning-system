@@ -19,10 +19,14 @@ namespace OnlineLearningSystem.Pages.Gen
         }
 
         [BindProperty]
-      public Subject Subject { get; set; } = default!;
+        public Subject Subject { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             if (id == null || _context.Subjects == null)
             {
                 return NotFound();
@@ -34,7 +38,7 @@ namespace OnlineLearningSystem.Pages.Gen
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Subject = subject;
             }
@@ -43,6 +47,10 @@ namespace OnlineLearningSystem.Pages.Gen
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+            if (!checkRole())
+            {
+                return RedirectToPage("../Authen/Login");
+            }
             if (id == null || _context.Subjects == null)
             {
                 return NotFound();
@@ -57,6 +65,15 @@ namespace OnlineLearningSystem.Pages.Gen
             }
 
             return RedirectToPage("./Index");
+        }
+        bool checkRole()
+        {
+            string role = HttpContext.Session.GetString("RoleSession");
+            if (string.IsNullOrEmpty(role) || !role.Equals("Admin"))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

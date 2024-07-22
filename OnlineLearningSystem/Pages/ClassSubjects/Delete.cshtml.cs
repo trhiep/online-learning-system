@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NPOI.Util;
 
 namespace OnlineLearningSystem.Pages.ClassSubjects
 {
@@ -12,7 +13,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
             _context = context;
         }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id,int? classID)
         {
             if (id == null || _context.ClassSubjects == null)
             {
@@ -27,7 +28,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToPage("./ListClassSubject");
+            return RedirectToPage("./ListClassSubject", new { id = classID});
         }
     }
 }

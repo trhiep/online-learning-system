@@ -1,8 +1,14 @@
 ﻿@page
 @model OnlineLearningSystem.Pages.ClassSubjectTests.TestDetailsModel
 @{
-    ViewData["Title"] = "CHI TIẾT " + @Model.ClassSubjectTest.TestName;
+    ViewData["Title"] = "CHI TIẾT " + @Model.ClassSubjectTest.TestName.ToUpper();
+
+    int countTeacherPrint = 1;
 }
+
+<div class="mt-5">
+    <a href="/ClassSubjectTests/Index?classSubjectId=@Model.ClassSubjectTest.ClassSubjectId" class="btn btn-outline-secondary">Trở lại</a>
+</div>
 
 <div class="mt-5">
     <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
@@ -76,11 +82,15 @@
     </tbody>
 </table>
 
-<button class="btn btn-outline-secondary">Trở lại</button>
-
-@if (DateTime.Now >= @Model.ClassSubjectTest.StartDate && DateTime.Now <= @Model.ClassSubjectTest.EndDate)
+@if (DateTime.Now >= Model.ClassSubjectTest.StartDate && DateTime.Now <= Model.ClassSubjectTest.EndDate && Model.LogedInAccount.Role == "Student")
 {
     <button data-test-id="@Model.ClassSubjectTest.TestId" class="btn btn-outline-warning btn-enter-test">Vào thi</button>
+}
+
+@if (DateTime.Now < Model.ClassSubjectTest.StartDate && Model.LogedInAccount.Role == "Teacher")
+{
+    <a href="/ClassSubjectTests/AddQuestion?testId=@Model.ClassSubjectTest.TestId" class="btn btn-outline-primary">Quản lý câu hỏi</a>
+    <a href="/ClassSubjectTests/Edit?testId=@Model.ClassSubjectTest.TestId" class="btn btn-outline-warning">Chỉnh sửa</a>
 }
 
 <div class="modal fade" id="enterTestModal" tabindex="-1" role="dialog" aria-labelledby="enterTestModal" aria-hidden="true">
@@ -118,62 +128,165 @@
         </div>
     </div>
 </div>
+<input type="hidden" id="thisTestId" value="@Model.ClassSubjectTest.TestId"/>
+@if (Model.LogedInAccount.Role == "Teacher" && Model.ClassSubjectTest.StartDate < DateTime.Now)
+{
+    <div class="mt-5">
+        <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+            <div class="row">
+                <div class="col-md-9">
+                    <h3 class="text-uppercase mb-0">Kết quả thi của học sinh</h3>
+                </div>
+                <div class="col-md-3">
+                    <form method="post" asp-page-handler="ExportGrades">
+                        <input type="hidden" name="TestID" value="@Model.ClassSubjectTest.TestId">
+                        <div class="row mt-5">
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-outline-success" style="width: 100%"><i class="bi bi-table"></i> XUẤT FILE EXCEL</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-<div class="mt-5">
-    <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
-        <div class="row">
-            <h3 class="text-uppercase mb-0">Lịch sử làm bài</h3>
+        <div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tài khoản</th>
+                        <th scope="col">Ngày làm</th>
+                        <th scope="col">Số câu đúng</th>
+                        <th scope="col">Điểm</th>
+                        <th scope="col">Kết quả</th>
+                        <th scope="col">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.TestResultDic != null)
+                    {
+                        @foreach (var kvp in Model.TestResultDic)
+                        {
+                            <tr>
+                                <td>@countTeacherPrint</td>
+                                <td>@kvp.Key</td>
+                                <td>@kvp.Value.TakenDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@kvp.Value.CorrectAnswers</td>
+                                <td>@kvp.Value.Grade</td>
+                                @if (kvp.Value.Status == "ĐẠT")
+                                {
+                                    <td class="black-green">
+                                        @kvp.Value.Status
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="black-red">
+                                        @kvp.Value.Status
+                                    </td>
+                                }
+                                <td>
+                                    <button data-student-account="@kvp.Key" style="width: 100%" class="btn btn-outline-primary btn-view-student-grade-details">XEM CHI TIẾT</button>
+                                </td>
+                            </tr>
+                            countTeacherPrint++;
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 
-    @if (Model.TestResults.Any())
-    {
-        @foreach (var result in Model.TestResults)
-        {
-            <div class="row mb-3">
-                <h6>Lần @result.AttemptsNo</h6>
-                <span class="black-bold">Ngày làm bài: @result.TakenDate.ToString("dd/MM/yyyy HH:mm")</span>
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th style="width: 10%">
-                                Số câu đúng
-                            </th>
-                            <td style="width: 90%">
-                                @result.CorrectAnswers / @Model.ClassSubjectTest.TestQuestions.Count()
-                            </td>
-                        </tr>
-                        <tr>
-                            <th style="width: 10%">
-                                Điểm
-                            </th>
-                            <td style="width: 90%">
-                                @result.Grade.ToString("F2") / 10
-                            </td>
-                        </tr>
-                        <tr>
-                            <th style="width: 10%">
-                                Kết quả
-                            </th>
-                            @if (result.Status == "ĐẠT"){
-                                <td style="width: 90%" class="black-green">
-                                    @result.Status
-                                </td>
-                            } else
-                            {
-                                <td style="width: 90%" class="black-red">
-                                    @result.Status
-                                </td>
-                            }
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="btn btn-outline-primary">XEM CHI TIẾT</button>
+    <div class="modal fade" id="resultDetailsModal" tabindex="-1" role="dialog" aria-labelledby="resultDetailsModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6>Thông tin chi tiết</h6>
+                </div>
+                <div class="modal-body">
+                    <div id="studentGradesContent">
+                        <!-- Content will be dynamically filled -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary">ĐÓNG</button>
+                </div>
             </div>
-        }
-    }
-</div>
+        </div>
+    </div>
+}
 
+@if (Model.LogedInAccount.Role == "Student")
+{
+    <div class="mt-5">
+        <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
+            <div class="row">
+                <h3 class="text-uppercase mb-0">Lịch sử làm bài</h3>
+            </div>
+        </div>
+
+        @if (Model.ClassSubjectTest.EndDate < DateTime.Now)
+        {
+            @if (Model.TestResults.Any())
+            {
+                @foreach (var result in Model.TestResults)
+                {
+                    <div class="row mb-3">
+                        <h6>Lần @result.AttemptsNo</h6>
+                        <span class="black-bold">Ngày làm bài: @result.TakenDate.ToString("dd/MM/yyyy HH:mm")</span>
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 10%">
+                                        Số câu đúng
+                                    </th>
+                                    <td style="width: 90%">
+                                        @result.CorrectAnswers / @Model.ClassSubjectTest.TestQuestions.Count()
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 10%">
+                                        Điểm
+                                    </th>
+                                    <td style="width: 90%">
+                                        @result.Grade.ToString("F2") / 10
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 10%">
+                                        Kết quả
+                                    </th>
+                                    @if (result.Status == "ĐẠT")
+                                    {
+                                        <td style="width: 90%" class="black-green">
+                                            @result.Status
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td style="width: 90%" class="black-red">
+                                            @result.Status
+                                        </td>
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                }
+            } else
+            {
+                <h5 class="text-uppercase mb-0">BẠN CHƯA LÀM BÀI THI NÀY LẦN NÀO</h5>
+            }
+        } else
+        {
+            <h5 class="text-uppercase mb-0">BẠN CHỈ CÓ THỂ XEM KẾT QUẢ SAU KHI THỜI GIAN THI KẾT THÚC</h5>
+        }
+    </div>
+}
+
+@Html.AntiForgeryToken()
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -186,6 +299,120 @@
             $('#enterTestModal .btn-outline-secondary').click(function () {
                 $('#enterTestModal').modal('hide');
             });
+        });
+        
+        $(document).ready(function () {
+            $('.btn-export-excel').click(function () {
+                const TestId = document.getElementById('thisTestId').value;
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: '/ClassSubjectTests/TestDetails?handler=ExportGrade',
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    data: { testId: TestId },
+                    success: function (response) {
+                        if (response.success) {
+
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+        });
+        
+        $(document).ready(function () {
+            $('.btn-view-student-grade-details').click(function () {
+                var button = document.querySelector(".btn-view-student-grade-details");
+                var studentAccount = button.getAttribute("data-student-account");
+                console.log(studentAccount);
+
+                const TestId = document.getElementById('thisTestId').value;
+                console.log(TestId);
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: '/ClassSubjectTests/TestDetails?handler=FetchStudentGrades',
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    data: { studentAccount: studentAccount, testId: TestId },
+                    success: function (response) {
+                        if (response.success) {
+                            console.log(response.resultOfStudent);
+                            var testResults = response.resultOfStudent;
+                            var modalBodyHtml = '';
+                            $.each(testResults, function (index, result) {
+                                modalBodyHtml += '<div class="row mb-3">';
+                                modalBodyHtml += '<h6>Lần ' + result.attemptsNo + '</h6>';
+                                modalBodyHtml += '<span class="black-bold">Ngày làm bài: ' + formatDate(result.takenDate) + '</span>';
+                                modalBodyHtml += '<table class="table table-bordered">';
+                                modalBodyHtml += '<tbody>';
+                                modalBodyHtml += '<tr>';
+                                modalBodyHtml += '<th style="width: 20%">Số câu đúng</th>';
+                                modalBodyHtml += '<td style="width: 80%">' + result.correctAnswers + '</td>';
+                                modalBodyHtml += '</tr>';
+                                modalBodyHtml += '<tr>';
+                                modalBodyHtml += '<th style="width: 20%">Điểm</th>';
+                                modalBodyHtml += '<td style="width: 80%">' + result.grade + ' / 10</td>';
+                                modalBodyHtml += '</tr>';
+                                modalBodyHtml += '<tr>';
+                                modalBodyHtml += '<th style="width: 20%">Kết quả</th>';
+                                if (result.status === 'ĐẠT') {
+                                    modalBodyHtml += '<td style="width: 80%" class="black-green">' + result.status + '</td>';
+                                } else {
+                                    modalBodyHtml += '<td style="width: 80%" class="black-red">' + result.status + '</td>';
+                                }
+                                modalBodyHtml += '</tr>';
+                                modalBodyHtml += '</tbody>';
+                                modalBodyHtml += '</table>';
+                                modalBodyHtml += '</div>';
+                            });
+
+                            // Insert content into modal body
+                            $('#studentGradesContent').html(modalBodyHtml);
+                            // Show the modal
+                            $('#resultDetailsModal').modal('show');
+
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+            // Handle modal close event
+            $('#resultDetailsModal .btn-outline-secondary').click(function () {
+                $('#resultDetailsModal').modal('hide');
+            });
+
+            function formatDate(inputDate) {
+                // Parse inputDate assuming it is in ISO 8601 format
+                var date = new Date(inputDate);
+
+                // Ensure date is valid
+                if (!isNaN(date.getTime())) {
+                    // Format the date as dd/MM/yyyy HH:mm
+                    var day = date.getDate().toString().padStart(2, '0');
+                    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
+                    var year = date.getFullYear();
+                    var hours = date.getHours().toString().padStart(2, '0');
+                    var minutes = date.getMinutes().toString().padStart(2, '0');
+
+                    return day + '/' + month + '/' + year + ' ' + hours + ':' + minutes;
+                } else {
+                    return 'Invalid Date';
+                }
+            }
         });
     </script>
 

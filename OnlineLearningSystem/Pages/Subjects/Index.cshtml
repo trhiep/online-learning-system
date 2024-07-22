@@ -9,7 +9,7 @@
 <div class="d-flex">
     <div class="search-form table table-striped">
         <form asp-action="./Index" method="post">
-            <input class="input" placeholder="Search subject" required="" type="text" height="15" name="search">
+            <input class="input" placeholder="Search subject" type="text" height="15" name="search">
             <button class="btn btn-outline-success" style="height:30px;width:30px;padding:0px">
                 <span style="height:30px;width:30px">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -103,13 +103,13 @@
         </tbody>
     </table>
 </div>
-<div id="grid-view" class="d-flex flex-wrap" style="display:none!important">
+<div id="grid-mode" class="d-flex flex-wrap" style="display:none!important">
     @foreach(var item in Model.Subject)
     {
         <div class="card col-3 m-3">
             <div class="card-body">
                 <h4 class="card-title">@item.SubjectName</h4>
-                <p class="card-text">@item.SubjectId</p>
+                <p class="card-text">id: @item.SubjectId</p>
                 <a asp-page="./Edit" asp-route-id="@item.SubjectId" class="card-link">
                     <span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">

@@ -8,36 +8,34 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineLearningSystem.Models;
 
-namespace OnlineLearningSystem.Pages.ClassSubjects
+namespace OnlineLearningSystem.Pages.SubjectPost
 {
-    public class EditModel : PageModel
+    public class EditPostModel : PageModel
     {
         private readonly OnlineLearningSystem.Models.OLS_DBContext _context;
 
-        public EditModel(OnlineLearningSystem.Models.OLS_DBContext context)
+        public EditPostModel(OnlineLearningSystem.Models.OLS_DBContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public ClassSubject ClassSubject { get; set; } = default!;
+        public ClassSubjectPost ClassSubjectPost { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.ClassSubjects == null)
+            if (id == null || _context.ClassSubjectPosts == null)
             {
                 return NotFound();
             }
 
-            var classsubject =  await _context.ClassSubjects.FirstOrDefaultAsync(m => m.ClassSubjectId == id);
-            if (classsubject == null)
+            var classsubjectpost =  await _context.ClassSubjectPosts.FirstOrDefaultAsync(m => m.PostId == id);
+            if (classsubjectpost == null)
             {
                 return NotFound();
             }
-            ClassSubject = classsubject;
-           ViewData["ClassId"] = new SelectList(_context.Classrooms, "ClassId", "ClassId");
-           ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectId");
-           ViewData["SubjectTeacher"] = new SelectList(_context.Accounts, "AccountId", "AccountId");
+            ClassSubjectPost = classsubjectpost;
+           ViewData["ClassSubjectId"] = new SelectList(_context.ClassSubjects, "ClassSubjectId", "ClassSubjectId");
             return Page();
         }
 
@@ -50,7 +48,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
                 return Page();
             }
 
-            _context.Attach(ClassSubject).State = EntityState.Modified;
+            _context.Attach(ClassSubjectPost).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +56,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ClassSubjectExists(ClassSubject.ClassSubjectId))
+                if (!ClassSubjectPostExists(ClassSubjectPost.PostId))
                 {
                     return NotFound();
                 }
@@ -71,9 +69,9 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
             return RedirectToPage("./Index");
         }
 
-        private bool ClassSubjectExists(int id)
+        private bool ClassSubjectPostExists(int id)
         {
-          return (_context.ClassSubjects?.Any(e => e.ClassSubjectId == id)).GetValueOrDefault();
+          return (_context.ClassSubjectPosts?.Any(e => e.PostId == id)).GetValueOrDefault();
         }
     }
 }

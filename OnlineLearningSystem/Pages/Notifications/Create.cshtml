@@ -7,10 +7,10 @@
 
 <h1>Create</h1>
 
-<h4>Notification</h4>
+<h4>New Notification</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4 border border-1" style="background:#fff" ;>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -24,30 +24,49 @@
                 <span asp-validation-for="Notification.Content" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="checkbox" name="all" id="all" onclick="chooseAll()"/>All
+                <label>Send to:</label>
                 <br />
-                @{
-                    int no = 0;
-                @foreach(var c in Model.Classrooms)
-                {
-                    no++;
-                    <span class="m-1"></span>
-                    <input type="checkbox" class="classroom" id="class-@no" onclick="chooseAllIn(@no)"/>
-                    @c.ClassName
-                    <br />
-                    @foreach(var s in Model.ClassStudents)
-                    {
-                        @if (c.ClassId.Equals(s.ClassId))
+                <span id="all-plus-button" onclick="toggleDisplayListClass()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                    </svg>
+                </span>
+                <input type="checkbox" name="all" id="all" onclick="chooseAll()" />All
+                <br />
+                <div id="list-class" style="display:none">
+                    @{
+                        int no = 0;
+                        @foreach (var c in Model.Classrooms)
                         {
-                            <span class="m-2"></span>
-                                <input type="checkbox" name="sendTo" class="@no student" id="@s.StudentId" value="@s.StudentId" onchange="change(@s.StudentId)" />
-                            @s.Student.Fullname
+                            no++;
+                            <span class="class-plus-button m-1" id="btn-class-@no" onclick="toggleDisplayListStudent(@no)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                </svg>
+                            </span>
+                            <input type="checkbox" class="classroom" id="class-@no" onclick="chooseAllIn(@no)" />
+                            @c.ClassName
                             <br />
+                            <div id="list-student-@no" style="display:none">
+                                @foreach (var s in Model.ClassStudents)
+                                {
+                                    @if (c.ClassId.Equals(s.ClassId))
+                                    {
+                                        <span class="m-2">
+                                        </span>
+                                        <input type="checkbox" name="sendTo" class="@no student" id="@s.StudentId" value="@s.StudentId" onchange="change(@s.StudentId)" />
+                                        @s.Student.Fullname
+                                        <br />
+                                    }
+                                }
+                            </div>
+
                         }
                     }
+                </div>
 
-                    }
-                }
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-outline-success" />
@@ -56,11 +75,13 @@
     </div>
 </div>
 
-<div>
-    <a asp-page="Index" class="btn btn-outline-success">Back to List</a>
+<div class="d-flex justify-content-center">
+    <a asp-page="Index" class="btn btn-outline-success m-1">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
 <script src="~/js/choose-account-notification.js"></script>
