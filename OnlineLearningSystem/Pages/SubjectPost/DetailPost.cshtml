@@ -1,0 +1,44 @@
+﻿@page
+@model OnlineLearningSystem.Pages.SubjectPost.DetailPostModel
+
+@{
+    ViewData["Title"] = "DetailPost";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>DetailPost</h1>
+
+<div>
+    <h4>ClassSubjectPost</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClassSubjectPost.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClassSubjectPost.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClassSubjectPost.Content)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClassSubjectPost.Content)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClassSubjectPost.PostedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClassSubjectPost.PostedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClassSubjectPost.ClassSubject)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClassSubjectPost.ClassSubject.ClassSubjectId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.ClassSubjectPost?.PostId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
