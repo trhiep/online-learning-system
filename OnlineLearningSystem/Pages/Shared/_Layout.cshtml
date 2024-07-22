@@ -45,12 +45,14 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0" style="margin-right:50px">
                 <a href="/Index" class="nav-item nav-link">TRANG CHỦ</a>
+                
                 @if (string.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("UserSession")))
                 {
                     <a href="/Authen/Login" class="nav-item nav-link">ĐĂNG NHẬP</a>
                 }
                 else
                 {
+                    <a href="/ClassSubjects/ListClassSubject?id=0" class="nav-item nav-link">LỚP CỦA TÔI</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             @HttpContextAccessor.HttpContext.Session.GetString("UserSession")

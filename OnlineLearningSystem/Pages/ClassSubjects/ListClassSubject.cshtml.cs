@@ -27,12 +27,51 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
         // For knowing if I need to show the button to create a new subject and manage Student in FE
         public bool IsAdminOrFormTeacher { get; set; } = false;
 
-        public async Task OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
-            ClassId = (int)id;
             // Check role and id user
             string accountIDString = HttpContext.Session.GetString("AccountIDSession");
             RoleName = HttpContext.Session.GetString("RoleSession");
+
+            if (id == null || id == 0)
+            {
+                // Handle the case where id is not provided
+                // If the user is a teacher, redirect them to the Classrooms List page
+                if (RoleName.Equals(StaticString.StringRoleTeacher))
+                {
+                    return RedirectToPage("/Classrooms/List");
+                }
+                // If the user is a student, determine their class
+                else if (RoleName.Equals(StaticString.StringRoleStudent))
+                {
+                    var temp = _context.ClassStudents
+                        .Where(c => c.StudentId == int.Parse(accountIDString))
+                        .Select(c => c.ClassId)
+                        .FirstOrDefault();
+
+                    if (temp != default(int))
+                    {
+                        ClassId = temp;
+                    }
+                    else
+                    {
+                        // Handle case where no class was found
+                        // Optionally, redirect to an error page or show a message
+                        // return RedirectToPage("/Error");
+                    }
+                }
+
+                // If ClassId could not be determined, handle the case
+                if (ClassId == 0)
+                {
+                    // Optionally, redirect to an error page or show a message
+                    // return RedirectToPage("/Error");
+                }
+            }
+            else
+            {
+                ClassId = (int)id;
+            }
 
             if (int.TryParse(accountIDString, out int accountID))
             {
@@ -74,16 +113,17 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
                     if (classroom != null)
                     {
                         ViewData["className"] = classroom.ClassName;
+                        ViewData["formTeacherName"] = classroom.FormTeacher?.Fullname ?? "Not Assigned";
                     }
                 }
             }
             else
             {
-                // Handle invalid AccountID session value
-                // For example, redirect to login or show a message
-                // Example:
-                // return RedirectToPage("/Login");
+                return RedirectToPage("/Authen/Login");
             }
+
+            return Page();
         }
+
     }
 }

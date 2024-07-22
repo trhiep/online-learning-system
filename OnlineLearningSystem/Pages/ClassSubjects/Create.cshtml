@@ -6,59 +6,74 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="text-center mb-4">
+    <h1 class="display-4 text-primary">
+        Tạo Môn Học cho lớp <span class="text-success">@ViewData["ClassName"]</span>
+    </h1>
+</div>
 
-<h4>ClassSubject</h4>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8 offset-md-2">
+        <!-- Form for creating ClassSubject -->
         <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <h5 class="text-danger">@ViewData["Error"]</h5>
-            <div class="form-group">
-                <label asp-for="ClassSubject.ClassId" class="control-label"></label>
-                <input asp-for="ClassSubject.ClassId" class="form-control" value="@Model.Class.ClassId" placeholder="@Model.Class.ClassName" readonly />
+            <!-- Hidden field to store ClassID -->
+            <input type="hidden" asp-for="ClassID" />
+
+            <div class="mb-3">
+                <!-- Label and readonly input for ClassId -->
+                <input type="hidden" asp-for="ClassSubject.ClassId" class="form-control" value="@Model.Class.ClassId" placeholder="@Model.Class.ClassName" readonly />
             </div>
 
-            <div class="form-group">
-                <label>Giáo viên bộ môn</label>
-                <div>
-                    @foreach (var teacher in ViewBag.TeacherList)
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" asp-for="ClassSubject.SubjectTeacher" value="@teacher.AccountId" />
-                            <label class="form-check-label">
-                                @teacher.Fullname
-                            </label>
+            <div class="mb-4">
+                <!-- Two-column layout for selecting SubjectTeacher and SubjectId -->
+                <div class="row">
+                    <!-- Column for Subject Teacher -->
+                    <div class="col-md-6">
+                        <label class="form-label">Giáo viên bộ môn</label>
+                        <div class="list-group">
+                            @foreach (var teacher in ViewBag.TeacherList)
+                            {
+                                <div class="list-group-item">
+                                    <input class="form-check-input me-2" type="radio" asp-for="ClassSubject.SubjectTeacher" value="@teacher.AccountId" id="teacher-@teacher.AccountId" />
+                                    <label class="form-check-label" for="teacher-@teacher.AccountId">
+                                        @teacher.Fullname
+                                    </label>
+                                </div>
+                            }
                         </div>
-                    }
+                    </div>
+
+                    <!-- Column for Subjects -->
+                    <div class="col-md-6">
+                        <label class="form-label">Môn học</label>
+                        <div class="list-group">
+                            @foreach (var subject in ViewBag.SubjectList)
+                            {
+                                <div class="list-group-item">
+                                    <input class="form-check-input me-2" type="radio" asp-for="ClassSubject.SubjectId" value="@subject.SubjectId" id="subject-@subject.SubjectId" />
+                                    <label class="form-check-label" for="subject-@subject.SubjectId">
+                                        @subject.SubjectName
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Môn học:</label>
-                <div>
-                    @foreach (var subject in ViewBag.SubjectList)
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" asp-for="ClassSubject.SubjectId" value="@subject.SubjectId" />
-                            <label class="form-check-label">
-                                @subject.SubjectName
-                            </label>
-                        </div>
-                    }
-                </div>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="mb-3 text-center">
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary">Create</button>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-page="./ListClassSubject" asp-route-id="@Model.Class.ClassId">Back to List</a>
+<!-- Link to go back to the list of ClassSubjects -->
+<div class="text-center mt-3">
+    <a asp-page="./ListClassSubject" asp-route-id="@Model.Class.ClassId" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {
