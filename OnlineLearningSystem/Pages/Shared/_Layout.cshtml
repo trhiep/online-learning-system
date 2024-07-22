@@ -1,7 +1,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
-    bool getSession = string.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("UserSession"));
+    string getSession = HttpContextAccessor.HttpContext.Session.GetString("AccountIDSession");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -63,17 +63,17 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             @if (@HttpContextAccessor.HttpContext.Session.GetString("RoleSession") == ("Admin"))
                             {
-                                <li><a class="dropdown-item" href="/admin-profile">Profile Admin</a></li>
+                                
                             }
                             else if (@HttpContextAccessor.HttpContext.Session.GetString("RoleSession") == "Student")
                             {
-                                <li><a class="dropdown-item" href="/student-profile">Profile</a></li>
+                                
                             }
                             else
                             {
-                                <li><a class="dropdown-item" href="/teacher-profile">Profile</a></li>
+                                
                             }
-
+                            <li><a class="dropdown-item" href="/GenerateAccount/Details?id=@getSession">Profile Admin</a></li>
 
                             <li><a class="dropdown-item" href="/dashboard">Manage</a></li>
                             <li><a class="dropdown-item" asp-page="/Authen/Logout">Logout</a></li>

@@ -72,9 +72,19 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                                                 Grade = highestGradeResult.Grade,
                                                 Status = highestGradeResult.Status
                                             };
-                                            TestResultDic.Add(student.Student.Username, newStudentResult);
+
+                                            // Check if the key already exists
+                                            if (!TestResultDic.ContainsKey(student.Student.Username))
+                                            {
+                                                TestResultDic.Add(student.Student.Username, newStudentResult);
+                                            }
+                                            else
+                                            {
+                                                // Optionally handle the case where the key already exists
+                                                // For example, you could update the existing entry
+                                                TestResultDic[student.Student.Username] = newStudentResult;
+                                            }
                                         }
-                                        
                                     }
                                     if (!TestResultDic.Any()) IsAllowToEdit = true;
                                 }

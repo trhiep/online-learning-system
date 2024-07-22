@@ -7,9 +7,13 @@
 
   <ItemGroup>
     <Compile Remove="Pages\Test\**" />
+    <Compile Remove="wwwroot\account-data\**" />
     <Content Remove="Pages\Test\**" />
+    <Content Remove="wwwroot\account-data\**" />
     <EmbeddedResource Remove="Pages\Test\**" />
+    <EmbeddedResource Remove="wwwroot\account-data\**" />
     <None Remove="Pages\Test\**" />
+    <None Remove="wwwroot\account-data\**" />
   </ItemGroup>
 
 
@@ -35,7 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\img\" />
-    <Folder Include="wwwroot\account-data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.json">
