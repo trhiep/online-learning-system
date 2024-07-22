@@ -12,6 +12,7 @@
     <None Remove="Pages\Test\**" />
   </ItemGroup>
 
+
   <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.32" />
@@ -30,9 +31,11 @@
     <PackageReference Include="NPOI" Version="2.7.1" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     <PackageReference Include="System.Net.Mail.Abstractions" Version="1.1.21" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\account-data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.json">

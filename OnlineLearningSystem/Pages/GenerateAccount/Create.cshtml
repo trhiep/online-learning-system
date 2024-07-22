@@ -1,0 +1,26 @@
+﻿@page
+@model OnlineLearningSystem.Pages.GenerateAccount.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create Account</h2>
+
+<form method="post" enctype="multipart/form-data" asp-page-handler="ImportAccount">
+    <div class="form-group">
+        <label for="ExcelFile">Upload Excel File</label>
+        <input type="file" name="ExcelFile" id="ExcelFile" class="form-control" />
+        <span asp-validation-for="ExcelFile" class="text-danger"></span>
+    </div>
+
+  
+    <button type="submit" class="btn btn-primary">Import</button>
+</form>
+
+@if (TempData["ToastMessage"] != null)
+{
+    <div class="alert alert-success mt-3">
+        @TempData["ToastMessage"]
+    </div>
+}

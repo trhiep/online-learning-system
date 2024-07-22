@@ -1,0 +1,112 @@
+﻿.ftco-section {
+    padding: 60px 0;
+    background: #f5f5f5;
+}
+
+.login-wrap {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+.icon {
+    font-size: 50px;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.login-form {
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px; /* Tăng khoảng cách giữa các ô input */
+}
+
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    box-shadow: none;
+    padding: 12px; /* Tăng khoảng cách bên trong ô input */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #28a745; /* Màu xanh lá cây khi lấy nét */
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Màu xanh lá cây sáng */
+    }
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #28a745; /* Màu xanh lá cây khi hover */
+        border-color: #28a745; /* Màu xanh lá cây khi hover */
+    }
+
+.alert {
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.checkbox-wrap {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    padding-left: 35px;
+    margin-bottom: 12px;
+}
+
+    .checkbox-wrap input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .checkbox-wrap .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background-color: #eee;
+        border-radius: 3px;
+    }
+
+    .checkbox-wrap input:checked ~ .checkmark {
+        background-color: #007bff;
+    }
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-wrap input:checked ~ .checkmark:after {
+    display: block;
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.text-md-right {
+    text-align: right;
+}
+
+.form-group.d-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
