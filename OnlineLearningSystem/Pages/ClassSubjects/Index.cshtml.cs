@@ -10,7 +10,9 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
     {
         private OLS_DBContext _dbContext;
         public Account LogedInAccount;
-        
+        //Hieu
+        public List<ClassSubjectPost> Posts { get; set; }
+
         public IndexModel(OLS_DBContext dbContext)
         {
             _dbContext = dbContext;
@@ -19,6 +21,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
         public IList<ClassSubjectTest> InactiveClassSubjectTest { get; set; } = default!;
 
         public IList<ClassSubjectTest> ActiveClassSubjectTest { get; set; } = default!;
+
         public ClassSubject ThisClassSubject { get; set; } = default!;
 
         public IActionResult OnGet(int? classSubjectId)
@@ -60,8 +63,12 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
                                            .Select(tq => tq.TestId)
                                            .Contains(cst.TestId) &&
                                   DateTime.Now >= cst.StartDate && DateTime.Now <= cst.EndDate).ToList();
+                        
+                        //load list ClassSubjectPost
+                        
                         return Page();
                     }
+
                 }
                 return RedirectToPage("/Index");
             } else

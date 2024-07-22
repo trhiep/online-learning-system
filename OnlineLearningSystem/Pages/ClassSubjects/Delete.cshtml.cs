@@ -1,6 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using NPOI.Util;
+using OnlineLearningSystem.Models;
 
 namespace OnlineLearningSystem.Pages.ClassSubjects
 {
@@ -13,9 +14,9 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
             _context = context;
         }
 
-        public async Task<IActionResult> OnGetAsync(int? id,int? classID)
+        public async Task<IActionResult> OnGetAsync(int? id, int? classID)
         {
-            if (id == null || _context.ClassSubjects == null)
+            if (id == null || classID == null || _context.ClassSubjects == null)
             {
                 return NotFound();
             }
@@ -28,7 +29,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToPage("./ListClassSubject", new { id = classID});
+            return RedirectToPage("./ListClassSubject", new { id = classID });
         }
     }
 }

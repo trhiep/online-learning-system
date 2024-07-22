@@ -42,10 +42,17 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
+    <script src="~/lib/richtexteditor/rte.js"></script>
+    <script src="~/lib/richtexteditor/plugins/all_plugins.js"></script>
     <script>
         $(document).ready(function () {
-            var editor = new RichTextEditor("#PostContent");
+            // Initialize the rich text editor
+            if (typeof RichTextEditor !== 'undefined') {
+                var editor = new RichTextEditor("#PostContent");
+            } else {
+                console.error("RichTextEditor is not defined.");
+            }
         });
     </script>
 }
+
