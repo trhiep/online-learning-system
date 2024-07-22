@@ -76,7 +76,7 @@ namespace OnlineLearningSystem.Pages.ClassSubjectTests
                             });
 
                             if (ans.IsCorrectAnswer) count++;
-
+                            
                             if (LogedInAccount.Role == "Student")
                             {
                                 // here
