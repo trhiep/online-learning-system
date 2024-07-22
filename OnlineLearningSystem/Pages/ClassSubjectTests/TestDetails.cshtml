@@ -87,7 +87,7 @@
     <button data-test-id="@Model.ClassSubjectTest.TestId" class="btn btn-outline-warning btn-enter-test">Vào thi</button>
 }
 
-@if (DateTime.Now < Model.ClassSubjectTest.StartDate && Model.LogedInAccount.Role == "Teacher")
+@if ((DateTime.Now < Model.ClassSubjectTest.StartDate || Model.IsAllowToEdit) && Model.LogedInAccount.Role == "Teacher")
 {
     <a href="/ClassSubjectTests/AddQuestion?testId=@Model.ClassSubjectTest.TestId" class="btn btn-outline-primary">Quản lý câu hỏi</a>
     <a href="/ClassSubjectTests/Edit?testId=@Model.ClassSubjectTest.TestId" class="btn btn-outline-warning">Chỉnh sửa</a>
@@ -128,7 +128,7 @@
         </div>
     </div>
 </div>
-<input type="hidden" id="thisTestId" value="@Model.ClassSubjectTest.TestId"/>
+<input type="hidden" id="thisTestId" value="@Model.ClassSubjectTest.TestId" />
 @if (Model.LogedInAccount.Role == "Teacher" && Model.ClassSubjectTest.StartDate < DateTime.Now)
 {
     <div class="mt-5">
@@ -143,6 +143,15 @@
                         <div class="row mt-5">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-outline-success" style="width: 100%"><i class="bi bi-table"></i> XUẤT FILE EXCEL</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="post" asp-page-handler="ExportDoTestHistory">
+                        <input type="hidden" name="TestID" value="@Model.ClassSubjectTest.TestId">
+                        <div class="row mt-5">
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-outline-success" style="width: 100%"><i class="bi bi-clock-history"></i> XUẤT LỊCH SỬ LÀM BÀI</button>
                             </div>
                         </div>
                     </form>
@@ -221,9 +230,17 @@
 {
     <div class="mt-5">
         <div class="border-start border-5 border-success ps-5 mb-5 mt-5">
-            <div class="row">
-                <h3 class="text-uppercase mb-0">Lịch sử làm bài</h3>
-            </div>
+            <form method="post" asp-page-handler="ExportDoTestHistory">
+                <input type="hidden" name="TestID" value="@Model.ClassSubjectTest.TestId">
+                <div class="row mt-5">
+                    <div class="col-md-9">
+                        <h3 class="text-uppercase mb-0">Lịch sử làm bài</h3>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-outline-success" style="width: 100%"><i class="bi bi-clock-history"></i> XUẤT LỊCH SỬ LÀM BÀI</button>
+                    </div>
+                </div>
+            </form>
         </div>
 
         @if (Model.ClassSubjectTest.EndDate < DateTime.Now)
@@ -272,14 +289,16 @@
                                 </tr>
                             </tbody>
                         </table>
-                        
+
                     </div>
                 }
-            } else
+            }
+            else
             {
                 <h5 class="text-uppercase mb-0">BẠN CHƯA LÀM BÀI THI NÀY LẦN NÀO</h5>
             }
-        } else
+        }
+        else
         {
             <h5 class="text-uppercase mb-0">BẠN CHỈ CÓ THỂ XEM KẾT QUẢ SAU KHI THỜI GIAN THI KẾT THÚC</h5>
         }
@@ -300,7 +319,7 @@
                 $('#enterTestModal').modal('hide');
             });
         });
-        
+
         $(document).ready(function () {
             $('.btn-export-excel').click(function () {
                 const TestId = document.getElementById('thisTestId').value;
@@ -325,10 +344,10 @@
                 });
             });
         });
-        
+
         $(document).ready(function () {
             $('.btn-view-student-grade-details').click(function () {
-                var button = document.querySelector(".btn-view-student-grade-details");
+                var button = this;
                 var studentAccount = button.getAttribute("data-student-account");
                 console.log(studentAccount);
 
