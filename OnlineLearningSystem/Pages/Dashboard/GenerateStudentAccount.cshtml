@@ -1,0 +1,101 @@
+﻿@page
+@model OnlineLearningSystem.Pages.Dashboard.GenerateStudentAccountModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Management</h1>
+        <div class="form-group">
+
+            <label for="classList">Class List</label>
+            <select id="classList" class="form-control">
+                <option value="" selected disabled>Select a class</option>
+                @foreach (var item in Model.ClassroomList)
+                {
+                    <option value="@item.ClassId">@item.ClassName</option>
+                }
+            </select>
+
+
+            <div style="margin-top: 10px;">
+                    <form enctype="multipart/form-data" method="post" asp-page-handler="Upload">
+                        <input type="file" id="fileInput" name="UploadedFile" />
+                        <button type="submit" id="submitFile" class="btn btn-primary">Submit</button>
+                    </form>
+            </div>
+            
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="studentTableBody">
+                 @foreach (var item in Model.ClassList)
+                 {
+                     <tr>
+                         <td>@item.Account.Username</td>
+                         <td>@item.Account.Fullname</td>
+                         <td>@item.Classroom.ClassName</td>
+                         <td>@item.Account.Status</td>
+                         <td>
+                            <a asp-page="/UserProfile/StudentProfile" asp-route-id="@item.Account.AccountId">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                         </td>
+                     </tr>
+                 }  
+            </tbody>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#classList').on('change', function () {
+                const selectedClassId = $(this).val();
+                if (selectedClassId) {
+                    $.ajax({
+                        url: '/GenerateStudentAccount?handler=Students' + '?classId=' + selectedClassId,
+                        type: 'GET',
+                        success: function (data) {
+                            const tableBody = $('#studentTableBody');
+                            tableBody.empty();
+                            if (data.students && Array.isArray(data.students)) {
+                                data.students.forEach(student => {
+                                    const row = `<tr>
+                        <td>${student.Account.AccountId}</td>
+                        <td>${student.Account.Fullname}</td>
+                        <td>${student.Classroom.ClassName}</td>
+                        <td>${student.Account.Status ? 'Active' : 'Inactive'}</td>
+                    </tr>`;
+                                    tableBody.append(row);
+                                });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error fetching student data:', status, error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

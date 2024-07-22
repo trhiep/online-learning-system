@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using NPOI.XWPF.UserModel;
 using OnlineLearningSystem.Models;
 
 namespace OnlineLearningSystem.Pages.ClassSubjects
@@ -21,6 +22,8 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
 
 
         //fake data for edit and check if form teacher is editting their class, you must get 2 these in onget 
+
+
         [BindProperty(SupportsGet = true)]
         public int AccountId { get; set; }
 
@@ -69,6 +72,11 @@ namespace OnlineLearningSystem.Pages.ClassSubjects
                         // return RedirectToPage("/Error");
                     }
                 }
+                else if(RoleName.Equals(StaticString.StringRoleAdmin))
+                {
+                    
+                }
+
 
                 // If ClassId could not be determined, handle the case
                 if (ClassId == 0)
